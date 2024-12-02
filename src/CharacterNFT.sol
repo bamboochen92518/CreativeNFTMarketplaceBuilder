@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
-import "lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CharacterNFT is ERC721Enumerable, Ownable {
     struct Character {
@@ -29,7 +29,7 @@ contract CharacterNFT is ERC721Enumerable, Ownable {
     mapping(uint256 => mapping(address => uint256)) public bids; // NFT ID to (bidder -> bid amount)
     mapping(uint256 => mapping(address => string)) public reports; // NFT ID to (reporter -> reason)
 
-    constructor() ERC721("CharacterNFT", "CNFT") {}
+    constructor() ERC721("CharacterNFT", "CNFT") Ownable(msg.sender) {}
 
     // Users can upload their self-created character by sending sufficient native tokens
     function uploadCharacter(address creator, string memory image) external payable {

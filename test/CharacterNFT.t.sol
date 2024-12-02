@@ -9,6 +9,7 @@ import {CharacterNFT} from "src/CharacterNFT.sol";
  */
 contract CharacterNFTTest is Test {
     address internal user;
+    address internal owner;
 
     CharacterNFT internal characterNFTContract;
 
@@ -18,8 +19,11 @@ contract CharacterNFTTest is Test {
     function setUp() public virtual {
         // Role
         user = makeAddr("user");
+        owner = makeAddr("owner");
 
+        vm.startPrank(owner);
         characterNFTContract = new CharacterNFT();
+        vm.stopPrank();
 
         vm.deal(user, 50 ether);
     }
