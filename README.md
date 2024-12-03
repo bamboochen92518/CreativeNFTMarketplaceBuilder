@@ -64,3 +64,10 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+### Install package
+
+```shell
+$ forge install OpenZeppelin/openzeppelin-contracts
+$ forge install smartcontractkit/foundry-chainlink-toolkit
+```
