@@ -4,14 +4,16 @@ pragma solidity ^0.8.0;
 // Import openzeppelin
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Import ChainLink
 import {FunctionsClient} from "@chainlink/contracts/v0.8/functions/dev/v1_0_0/FunctionsClient.sol";
 import {ConfirmedOwner} from "@chainlink/contracts/v0.8/shared/access/ConfirmedOwner.sol";
 import {FunctionsRequest} from "@chainlink/contracts/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 
-contract CharacterNFT is ERC721Enumerable, Ownable {
+contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
+    using FunctionsRequest for FunctionsRequest.Request;
+
+    // About NFT
     struct Character {
         string image;
         address creator;
@@ -29,13 +31,16 @@ contract CharacterNFT is ERC721Enumerable, Ownable {
     uint256 public REGRADE_TIME = 3;
     uint256 public MAX_SCORE = 5;
 
-    mapping(uint256 => Character) public characters; // NFT ID to Character
-    mapping(uint256 => uint256) public leftRegradeTimes; // NFT ID to regrading opportunities
-    mapping(uint256 => address[]) public bidders; // NFT ID to list of bidders
-    mapping(uint256 => mapping(address => uint256)) public bids; // NFT ID to (bidder -> bid amount)
-    mapping(uint256 => mapping(address => string)) public reports; // NFT ID to (reporter -> reason)
+    mapping(uint256 => Character) public characters;                // NFT ID to Character
+    mapping(uint256 => uint256) public leftRegradeTimes;            // NFT ID to regrading opportunities
+    mapping(uint256 => address[]) public bidders;                   // NFT ID to list of bidders
+    mapping(uint256 => mapping(address => uint256)) public bids;    // NFT ID to (bidder -> bid amount)
+    mapping(uint256 => mapping(address => string)) public reports;  // NFT ID to (reporter -> reason)
 
-    constructor() ERC721("CharacterNFT", "CNFT") Ownable(msg.sender) {}
+    // About ChainLink
+    mapping(bytes32 => uint256) public requestIdtoNFT;              // requestId to NFT ID
+
+    constructor() ERC721("CharacterNFT", "CNFT") FunctionsClient(router) ConfirmedOwner(msg.sender) {}
 
     // Users can upload their self-created character by sending sufficient native tokens
     function uploadCharacter(address creator, string memory image) external payable {
@@ -44,7 +49,7 @@ contract CharacterNFT is ERC721Enumerable, Ownable {
         uint256 newCharacterId = characterCounter++;
         _safeMint(creator, newCharacterId);
 
-        (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price) = gradeCharacter(image);
+        (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price) = gradeCharacter(image, newCharacterId);
 
         characters[newCharacterId] = Character({
             image: image,
@@ -61,11 +66,17 @@ contract CharacterNFT is ERC721Enumerable, Ownable {
     }
 
     // Grades a character based on the image
-    function gradeCharacter(string memory image)
+    function gradeCharacter(string memory image, uint256 NFTID)
         internal
         returns (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price)
     {
         // Example grading logic: Randomized scores (to be replaced with real grading logic)
+        /*
+        string[] memory args = new string[](1);
+        args[0] = image;
+        bytes32 requestId = sendRequest(14340, args);
+        requestIdtoNFT[requestId] = NFTID;
+        */
         score_c = uint256(keccak256(abi.encodePacked(image))) % (MAX_SCORE + 1);
         score_t = uint256(keccak256(abi.encodePacked(image, "t"))) % (MAX_SCORE + 1);
         score_a = uint256(keccak256(abi.encodePacked(image, "a"))) % (MAX_SCORE + 1);
@@ -81,7 +92,7 @@ contract CharacterNFT is ERC721Enumerable, Ownable {
 
         leftRegradeTimes[NFTID]--;
 
-        (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price) = gradeCharacter(characters[NFTID].image);
+        (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price) = gradeCharacter(characters[NFTID].image, NFTID);
 
         characters[NFTID].description = description;
         characters[NFTID].score_c = score_c;
@@ -166,5 +177,102 @@ contract CharacterNFT is ERC721Enumerable, Ownable {
             value /= 10;
         }
         return string(buffer);
+    }
+
+    // ChainLink function
+    // State variables to store the last request ID, response, and error
+    bytes32 public s_lastRequestId;
+    bytes public s_lastResponse;
+    bytes public s_lastError;
+
+    // Custom error type
+    error UnexpectedRequestID(bytes32 requestId);
+
+    // Event to log responses
+    event Response(
+        bytes32 indexed requestId,
+        string character,
+        bytes response,
+        bytes err
+    );
+
+    // Router address - Hardcoded for Sepolia
+    // Check to get the router address for your supported network https://docs.chain.link/chainlink-functions/supported-networks
+    address router = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
+
+    // JavaScript source code
+    string source =
+        "const prompt = \"Please generate a 15-20 word description of this character (do not mention boxy, pixelated), and rank it from 1 to 5 respectively for Creativity, Technique, and Aesthetics. The output should be in JSON format, like: {\"Description\": str, \"Creativity\": int, \"Technique\": int, \"Aesthetics\": int}.\""
+        "const image = args[0]"
+        "const geminiRequest = Functions.makeHttpRequest({"
+        "    url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${secrets.googleApiKey}`,"
+        "    method: \"POST\","
+        "    headers: {\"Content-Type\": \"application/json\"},"
+        "    data: {\"contents\": [{\"parts\": [{\"text\": prompt}, {\"inline_data\": {\"mime_type\": \"image/jpg\", \"data\": image}}]}]},"
+        "    timeout: 100000"
+        "});"
+        "const [geminiResponse] = await Promise.all([geminiRequest]);"
+        "const result = geminiResponse.data.candidates[0].content.parts[0].text;"
+        "return Functions.encodeString(result);";
+
+    //Callback gas limit
+    uint32 gasLimit = 300000;
+
+    // donID - Hardcoded for Sepolia
+    // Check to get the donID for your supported network https://docs.chain.link/chainlink-functions/supported-networks
+    bytes32 donID = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
+
+    /**
+     * @notice Initializes the contract with the Chainlink router address and sets the contract owner
+     */
+
+    /**
+     * @notice Sends an HTTP request for character information
+     * @param subscriptionId The ID for the Chainlink subscription
+     * @param args The arguments to pass to the HTTP request
+     * @return requestId The ID of the request
+     */
+    function sendRequest(
+        uint64 subscriptionId,
+        string[] memory args
+    ) internal returns (bytes32 requestId) {
+        FunctionsRequest.Request memory req;
+        req.initializeRequestForInlineJavaScript(source); // Initialize the request with JS code
+        if (args.length > 0) req.setArgs(args); // Set the arguments for the request
+
+        // Send the request and store the request ID
+        s_lastRequestId = _sendRequest(
+            req.encodeCBOR(),
+            subscriptionId,
+            gasLimit,
+            donID
+        );
+
+        return s_lastRequestId;
+    }
+
+    /**
+     * @notice Callback function for fulfilling a request
+     * @param requestId The ID of the request to fulfill
+     * @param response The HTTP response data
+     * @param err Any errors from the Functions request
+     */
+    function fulfillRequest(
+        bytes32 requestId,
+        bytes memory response,
+        bytes memory err
+    ) internal override {
+        if (s_lastRequestId != requestId) {
+            revert UnexpectedRequestID(requestId); // Check if request IDs match
+        }
+        // Update the contract's state variables with the response and any errors
+        s_lastResponse = response;
+        s_lastError = err;
+
+        // Update NFT
+        characters[requestIdtoNFT[requestId]].description = string(response);
+
+        // Emit an event to log the response
+        emit Response(requestId, string(response), s_lastResponse, s_lastError);
     }
 }
