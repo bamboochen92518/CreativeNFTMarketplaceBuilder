@@ -67,7 +67,14 @@ $ cast --help
 
 ### Install package
 
+**About Foundry**
 ```shell
 $ forge install OpenZeppelin/openzeppelin-contracts
 $ forge install smartcontractkit/foundry-chainlink-toolkit
+```
+
+**About npm**
+```
+$ cd webpage
+$ npm install
 ```
