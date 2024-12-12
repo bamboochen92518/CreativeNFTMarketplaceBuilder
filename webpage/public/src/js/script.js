@@ -63,66 +63,9 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
     }
 });
 
-// Call Read Function in js
-document.getElementById("readData").addEventListener("click", async () => {
-	if (!contract) {
-		alert("請先連接錢包！");
-		return;
-	}
-	try {
-		const result = await contract.getAllCharacters();
-
-        const characters = result.map(character => ({
-            image: character.image,
-            creator: character.creator,
-            owner: character.owner,
-            description: character.description,
-            score_c: character.score_c.toNumber(),
-            score_t: character.score_t.toNumber(),
-            score_a: character.score_a.toNumber(),
-            price: character.price.toNumber() / 1e18
-        }));
-
-		document.getElementById("contractData").innerText = result;
-		console.log("合約返回的資料:", result);
-	} catch (error) {
-		console.error("調用合約失敗:", error);
-	}
-});
-
-// Utility function to resize an image to 32x32 and convert to Base64
-async function processImage(file, mimeType) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = 32;
-                canvas.height = 32;
-
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, 32, 32);
-
-                const data = canvas.toDataURL(mimeType).split(",")[1]; // Base64 encoded data
-                resolve({
-                    inlineData: {
-                        data: data,
-                        mimeType: mimeType,
-                    },
-                });
-            };
-            img.onerror = reject;
-            img.src = event.target.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-}
-
-
 // Send transaction to the contract
 document.getElementById("sendTransaction").addEventListener("click", async () => {
+    // console.log("Transaction sent!");
     const fileInput = document.getElementById("uploadImage");
     if (!fileInput.files.length) {
         alert("Please select an image!");
@@ -154,4 +97,78 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
     } catch (error) {
         console.error("Transaction failed:", error);
     }
+// Populate the character gallery dynamically
+function populateCharacterGallery(characters) {
+    const galleryGrid = document.getElementById("galleryGrid");
+    galleryGrid.innerHTML = ""; // Clear previous entries
+
+    characters.forEach((character, index) => {
+        const characterCard = document.createElement("div");
+        characterCard.className = "character-card";
+
+        characterCard.innerHTML = `
+            <img src="data:image/png;base64,${character.image}" alt="Character Image">
+            <p><strong>Creator:</strong> ${character.creator}</p>
+            <p><strong>Owner:</strong> ${character.owner}</p>
+            <p><strong>Description:</strong> ${character.description}</p>
+            <p><strong>Scores:</strong> C: ${character.score_c}, T: ${character.score_t}, A: ${character.score_a}</p>
+            <p><strong>Price:</strong> ${character.price} AVAX</p>
+        `;
+
+        galleryGrid.appendChild(characterCard);
+
+        // Add a new row after every 3 cards
+        if ((index + 1) % 3 === 0) {
+            const rowBreak = document.createElement("div");
+            rowBreak.className = "row-break";
+            galleryGrid.appendChild(rowBreak);
+        }
+    });
+}
+
+// Utility function to resize an image to 32x32 and convert to Base64
+async function processImage(file, mimeType) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 32;
+                canvas.height = 32;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, 32, 32);
+
+                const data = canvas.toDataURL(mimeType).split(",")[1]; // Base64 encoded data
+                resolve({
+                    inlineData: {
+                        data: data,
+                        mimeType: mimeType,
+                    },
+                });
+            };
+            img.onerror = reject;
+            img.src = event.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+try {
+    const result = await contract.getAllCharacters();
+    const characters = result.map(character => ({
+    image: character.image,
+    creator: character.creator,
+    owner: character.owner,
+    description: character.description,
+    score_c: character.score_c.toNumber(),
+    score_t: character.score_t.toNumber(),
+    score_a: character.score_a.toNumber(),
+    price: character.price.toNumber() / 1e18
+}));
+populateCharacterGallery(characters);
+} catch (error) {
+    console.error("調用合約失敗:", error);
+}
 });

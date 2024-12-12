@@ -138,3 +138,40 @@ body {
     display: block;
 }
 
+/* Character Gallery */
+#characterGallery {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #001f3f;
+    color: #ffffff;
+    overflow-y: auto;
+}
+
+#characterGallery h3 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#galleryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+#galleryGrid .characterCard {
+    background-color: #002f5f;
+    border: 1px solid #0056a3;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+#galleryGrid img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
