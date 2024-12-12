@@ -1,5 +1,5 @@
 // Global Variable
-let provider, signer, contract;
+let provider, signer, contract, accounts;
 let contractAddress, contractABI;
 
 // Fetch Smart Contract and ABI code
@@ -33,7 +33,7 @@ const AVALANCHE_TESTNET_PARAMS = {
 document.getElementById("connectWallet").addEventListener("click", async () => {
     if (typeof window.ethereum !== "undefined") {
         try {
-            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+            accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
 
             if (accounts.length === 0) {
                 throw new Error("No accounts found. Please unlock your wallet.");
@@ -132,8 +132,8 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
         const processedImage = await processImage(file, mimeType);
 
         // Call the contract's function with msg.sender and processed image data
-        const tx = await contract.uploadCharacter(processedImage.inlineData.data, {
-            value: ethers.parseUnits("0.01", "ether"), // Example: send 0.01 ETH with the transaction
+        const tx = await contract.uploadCharacter(accounts[0], processedImage.inlineData.data, {
+            value: ethers.parseUnits("0.01", "ether"),
         });
 
         document.getElementById("transactionHash").innerText = tx.hash;

@@ -18,8 +18,17 @@ $ cd webpage
 $ npm install
 ```
 
+### Deploy smart contract
+
+```
+$ forge create --rpc-url $FUJI_RPC_URL --private-key $PRIVATE_KEY src/CharacterNFT.sol:CharacterNFT
+```
+You should first export `FUJI_RPC_URL` and `PRIVATE_KEY`. 
+After deploying the contract, you need to add your contract address to `webpage/public/src/js/contract.json`.
+
 ### Run webpage
+
 ```shell
 $ cd webpage
-# node server.js
+$ node server.js
 ```

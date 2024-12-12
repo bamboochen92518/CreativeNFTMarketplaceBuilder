@@ -26,8 +26,8 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
     }
 
     uint256 public characterCounter;
-    uint256 public UPLOAD_FEE = 10 ether;
-    uint256 public REGRADE_FEE = 5 ether;
+    uint256 public UPLOAD_FEE = 0.01 ether;
+    uint256 public REGRADE_FEE = 0.005 ether;
     uint256 public REGRADE_TIME = 3;
     uint256 public MAX_SCORE = 5;
 
