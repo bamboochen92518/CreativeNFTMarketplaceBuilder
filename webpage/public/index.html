@@ -1,25 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>智能合約互動</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
-	<script src="src/js/script.js" type="module"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能合約互動</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+    <script src="src/js/script.js" type="module"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggleSidebar = document.getElementById("toggleSidebar");
+            const sidebar = document.getElementById("sidebar");
+            const uploadModal = document.getElementById("uploadModal");
+            const modalOverlay = document.getElementById("modalOverlay");
+            const uploadButton = document.getElementById("uploadCharacter");
+
+            toggleSidebar.addEventListener("click", () => {
+                sidebar.classList.toggle("active");
+            });
+
+            uploadButton.addEventListener("click", () => {
+                uploadModal.classList.add("active");
+                modalOverlay.classList.add("active");
+            });
+
+            modalOverlay.addEventListener("click", () => {
+                uploadModal.classList.remove("active");
+                modalOverlay.classList.remove("active");
+            });
+        });
+    </script>
 </head>
 <body>
-	<h1>與智能合約互動</h1>
-	<button id="connectWallet">連接錢包</button>
-	<p>錢包地址: <span id="walletAddress">尚未連接</span></p>
+    <button id="toggleSidebar">☰</button>
+    <div id="sidebar">
+        <button id="connectWallet">連接錢包</button>
+        <button id="uploadCharacter">上傳Character</button>
+    </div>
 
-	<h3>獲得所有Character</h3>
-	<button id="readData">調用只讀方法</button>
-	<p>合約返回資料: <span id="contractData">尚未獲取</span></p>
-
-	<h3>上傳Character</h3>
-    <input type="file" id="uploadImage" accept="image/*">
-	<button id="sendTransaction">發送交易</button>
-	<p>交易哈希: <span id="transactionHash">尚未發送</span></p>
-
+    <div id="modalOverlay"></div>
+    <div id="uploadModal">
+        <h3>上傳Character</h3>
+        <input type="file" id="uploadImage" accept="image/*">
+        <button id="sendTransaction">提交</button>
+    </div>
 </body>
 </html>
+
