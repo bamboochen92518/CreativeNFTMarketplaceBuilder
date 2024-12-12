@@ -70,8 +70,19 @@ document.getElementById("readData").addEventListener("click", async () => {
 		return;
 	}
 	try {
-		// 調用合約的只讀方法
 		const result = await contract.getAllCharacters();
+
+        const characters = result.map(character => ({
+            image: character.image,
+            creator: character.creator,
+            owner: character.owner,
+            description: character.description,
+            score_c: character.score_c.toNumber(),
+            score_t: character.score_t.toNumber(),
+            score_a: character.score_a.toNumber(),
+            price: character.price.toNumber() / 1e18
+        }));
+
 		document.getElementById("contractData").innerText = result;
 		console.log("合約返回的資料:", result);
 	} catch (error) {
@@ -110,7 +121,6 @@ async function processImage(file, mimeType) {
 }
 
 
-// 3. 發送交易到智能合約
 // Send transaction to the contract
 document.getElementById("sendTransaction").addEventListener("click", async () => {
     const fileInput = document.getElementById("uploadImage");
@@ -136,7 +146,6 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
             value: ethers.parseUnits("0.01", "ether"),
         });
 
-        document.getElementById("transactionHash").innerText = tx.hash;
         console.log("Transaction sent:", tx.hash);
 
         // Wait for transaction confirmation
