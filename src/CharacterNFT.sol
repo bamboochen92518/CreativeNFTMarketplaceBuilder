@@ -205,7 +205,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
         "const prompt = \"Please generate a 15-20 word description of this character (do not mention boxy, pixelated), and rank it from 1 to 5 respectively for Creativity, Technique, and Aesthetics. The output should be in JSON format, like: {\"Description\": str, \"Creativity\": int, \"Technique\": int, \"Aesthetics\": int}.\""
         "const image = args[0]"
         "const geminiRequest = Functions.makeHttpRequest({"
-        "    url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${secrets.googleApiKey}`,"
+        "    url: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDb9YMKlnr8hAfA_RdWklDX9o4ulsrhw34\","
         "    method: \"POST\","
         "    headers: {\"Content-Type\": \"application/json\"},"
         "    data: {\"contents\": [{\"parts\": [{\"text\": prompt}, {\"inline_data\": {\"mime_type\": \"image/jpg\", \"data\": image}}]}]},"
