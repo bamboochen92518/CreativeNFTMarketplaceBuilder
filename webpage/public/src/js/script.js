@@ -46,7 +46,7 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
             })
 
             const walletAddress = accounts[0];
-            document.getElementById("walletAddress").innerText = walletAddress;
+            // document.getElementById("walletAddress").innerText = walletAddress;
 
             // Connect to the contract
             provider = new ethers.BrowserProvider(window.ethereum);
@@ -54,6 +54,9 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
             contract = new ethers.Contract(contractAddress, contractABI, signer);
 
             console.log("Successfully Connected", walletAddress);
+
+            // Load characters after connecting
+            loadCharacters();
 
         } catch (error) {
             console.error("Connected Failed", error);
@@ -63,32 +66,6 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
     }
 });
 
-// Call Read Function in js
-document.getElementById("readData").addEventListener("click", async () => {
-	if (!contract) {
-		alert("請先連接錢包！");
-		return;
-	}
-	try {
-		const result = await contract.getAllCharacters();
-
-        const characters = result.map(character => ({
-            image: character.image,
-            creator: character.creator,
-            owner: character.owner,
-            description: character.description,
-            score_c: character.score_c,
-            score_t: character.score_t,
-            score_a: character.score_a,
-            price: character.price 
-        }));
-
-		document.getElementById("contractData").innerText = result;
-		console.log("合約返回的資料:", result);
-	} catch (error) {
-		console.error("調用合約失敗:", error);
-	}
-});
 
 // Utility function to resize an image to 32x32 and convert to Base64
 async function processImage(file, mimeType) {
@@ -155,3 +132,97 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
         console.error("Transaction failed:", error);
     }
 });
+
+
+// Load characters or display placeholder
+async function loadCharacters() {
+    const galleryGrid = document.getElementById("galleryGrid");
+
+    if (!contract) {
+        galleryGrid.innerHTML = `
+            <div class="placeholder" style="display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%;">
+                <img src="./src/images/placeHolder.png" alt="Placeholder" onerror="this.style.display='none';" style="max-width: 200px; margin-bottom: 20px;">
+                <p style="color: lightgray; opacity: 0.6; font-size: 24px; font-weight: bold; text-align: center;">Wallet not connected</p>
+            </div>
+        `;
+        return;
+    }
+    try {
+        const result = await contract.getAllCharacters();
+
+        const characters = result.map(character => ({
+            image: character.image,
+            creator: character.creator,
+            owner: character.owner,
+            description: character.description,
+            score_c: character.score_c.toNumber(),
+            score_t: character.score_t.toNumber(),
+            score_a: character.score_a.toNumber(),
+            price: character.price.toNumber() / 1e18
+        }));
+
+        populateCharacterGallery(characters);
+    } catch (error) {
+        console.error("調用合約失敗:", error);
+    }
+}
+
+// Populate the character gallery dynamically
+function populateCharacterGallery(characters) {
+    const galleryGrid = document.getElementById("galleryGrid");
+    galleryGrid.innerHTML = ""; // Clear previous entries
+
+    characters.forEach((character, index) => {
+        const characterCard = document.createElement("div");
+        characterCard.className = "character-card";
+
+        characterCard.innerHTML = `
+            <img src="data:image/png;base64,${character.image}" alt="Character Image">
+            <p><strong>Creator:</strong> ${character.creator}</p>
+            <p><strong>Owner:</strong> ${character.owner}</p>
+            <p><strong>Description:</strong> ${character.description}</p>
+            <p><strong>Scores:</strong> C: ${character.score_c}, T: ${character.score_t}, A: ${character.score_a}</p>
+            <p><strong>Price:</strong> ${character.price} AVAX</p>
+        `;
+
+        galleryGrid.appendChild(characterCard);
+
+        // Add a new row after every 3 cards
+        if ((index + 1) % 3 === 0) {
+            const rowBreak = document.createElement("div");
+            rowBreak.className = "row-break";
+            galleryGrid.appendChild(rowBreak);
+        }
+    });
+}
+
+// Utility function to resize an image to 32x32 and convert to Base64
+async function processImage(file, mimeType) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 32;
+                canvas.height = 32;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, 32, 32);
+
+                const data = canvas.toDataURL(mimeType).split(",")[1]; // Base64 encoded data
+                resolve({
+                    inlineData: {
+                        data: data,
+                        mimeType: mimeType,
+                    },
+                });
+            };
+            img.onerror = reject;
+            img.src = event.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+loadCharacters();
