@@ -10,6 +10,9 @@ import {FunctionsClient} from "@chainlink/contracts/v0.8/functions/dev/v1_0_0/Fu
 import {ConfirmedOwner} from "@chainlink/contracts/v0.8/shared/access/ConfirmedOwner.sol";
 import {FunctionsRequest} from "@chainlink/contracts/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 
+// Import Test
+import {Test, console2} from "forge-std/Test.sol";
+
 contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
     using FunctionsRequest for FunctionsRequest.Request;
 
@@ -40,6 +43,9 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
     // About ChainLink
     mapping(bytes32 => uint256) public requestIdtoNFT;              // requestId to NFT ID
 
+    // Check to get the router address for your supported network https://docs.chain.link/chainlink-functions/supported-networks
+    address router = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
+
     constructor() ERC721("CharacterNFT", "CNFT") FunctionsClient(router) ConfirmedOwner(msg.sender) {}
 
     // Users can upload their self-created character by sending sufficient native tokens
@@ -49,39 +55,28 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
         uint256 newCharacterId = characterCounter++;
         _safeMint(creator, newCharacterId);
 
-        (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price) = gradeCharacter(image, newCharacterId);
-
         characters[newCharacterId] = Character({
             image: image,
             creator: creator,
             owner: creator,
-            description: description,
-            score_c: score_c,
-            score_t: score_t,
-            score_a: score_a,
-            price: price
+            description: "Grading ...",
+            score_c: 0,
+            score_t: 0,
+            score_a: 0,
+            price: 0
         });
+
+        gradeCharacter(image, newCharacterId);
 
         leftRegradeTimes[newCharacterId] = REGRADE_TIME;
     }
 
     // Grades a character based on the image
-    function gradeCharacter(string memory image, uint256 NFTID)
-        internal
-        returns (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price)
-    {
-        // Example grading logic: Randomized scores (to be replaced with real grading logic)
-        /*
+    function gradeCharacter(string memory image, uint256 NFTID) internal {
         string[] memory args = new string[](1);
         args[0] = image;
         bytes32 requestId = sendRequest(14340, args);
         requestIdtoNFT[requestId] = NFTID;
-        */
-        score_c = uint256(keccak256(abi.encodePacked(image))) % (MAX_SCORE + 1);
-        score_t = uint256(keccak256(abi.encodePacked(image, "t"))) % (MAX_SCORE + 1);
-        score_a = uint256(keccak256(abi.encodePacked(image, "a"))) % (MAX_SCORE + 1);
-        price = (score_c + score_t + score_a) * 1 ether;
-        description = string(abi.encodePacked("This character has a grade of ", toString(price), "."));
     }
 
     // Allows the owner of an NFT to request a regrade
@@ -91,14 +86,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
         require(leftRegradeTimes[NFTID] > 0, "No more regrade attempts available");
 
         leftRegradeTimes[NFTID]--;
-
-        (string memory description, uint256 score_c, uint256 score_t, uint256 score_a, uint256 price) = gradeCharacter(characters[NFTID].image, NFTID);
-
-        characters[NFTID].description = description;
-        characters[NFTID].score_c = score_c;
-        characters[NFTID].score_t = score_t;
-        characters[NFTID].score_a = score_a;
-        characters[NFTID].price = price;
+        gradeCharacter(characters[NFTID].image, NFTID);
     }
 
     // Allows users to bid for a character by sending native tokens
@@ -196,14 +184,9 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
         bytes err
     );
 
-    // Router address - Hardcoded for Sepolia
-    // Check to get the router address for your supported network https://docs.chain.link/chainlink-functions/supported-networks
-    address router = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
-
     // JavaScript source code
-    string source =
-        "const prompt = \"Please generate a 15-20 word description of this character (do not mention boxy, pixelated), and rank it from 1 to 5 respectively for Creativity, Technique, and Aesthetics. The output should be in JSON format, like: {\"Description\": str, \"Creativity\": int, \"Technique\": int, \"Aesthetics\": int}.\""
-        "const image = args[0]"
+    string source = "const prompt = \"Please generate a 15-20 word description of this character (do not mention boxy, pixelated), and rank it from 1 to 5 respectively for Creativity, Technique, and Aesthetics. The output should be in JSON format, like: {\"Description\": str, \"Creativity\": int, \"Technique\": int, \"Aesthetics\": int}.\";"
+        "const image = args[0];"
         "const geminiRequest = Functions.makeHttpRequest({"
         "    url: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDb9YMKlnr8hAfA_RdWklDX9o4ulsrhw34\","
         "    method: \"POST\","
@@ -221,10 +204,6 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
     // donID - Hardcoded for Sepolia
     // Check to get the donID for your supported network https://docs.chain.link/chainlink-functions/supported-networks
     bytes32 donID = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
-
-    /**
-     * @notice Initializes the contract with the Chainlink router address and sets the contract owner
-     */
 
     /**
      * @notice Sends an HTTP request for character information
@@ -270,7 +249,17 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
         s_lastError = err;
 
         // Update NFT
-        characters[requestIdtoNFT[requestId]].description = string(response);
+        string memory description = string(response);
+        uint256 score_c = 1;
+        uint256 score_t = 2;
+        uint256 score_a = 3;
+        uint256 price = (score_c + score_t + score_a) * 1 ether;
+
+        characters[requestIdtoNFT[requestId]].description = description;
+        characters[requestIdtoNFT[requestId]].score_c = score_c;
+        characters[requestIdtoNFT[requestId]].score_t = score_t;
+        characters[requestIdtoNFT[requestId]].score_a = score_a;
+        characters[requestIdtoNFT[requestId]].price = price;
 
         // Emit an event to log the response
         emit Response(requestId, string(response), s_lastResponse, s_lastError);

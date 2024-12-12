@@ -77,10 +77,10 @@ document.getElementById("readData").addEventListener("click", async () => {
             creator: character.creator,
             owner: character.owner,
             description: character.description,
-            score_c: character.score_c.toNumber(),
-            score_t: character.score_t.toNumber(),
-            score_a: character.score_a.toNumber(),
-            price: character.price.toNumber() / 1e18
+            score_c: character.score_c,
+            score_t: character.score_t,
+            score_a: character.score_a,
+            price: character.price 
         }));
 
 		document.getElementById("contractData").innerText = result;
