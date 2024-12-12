@@ -46,7 +46,7 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
             })
 
             const walletAddress = accounts[0];
-            document.getElementById("walletAddress").innerText = walletAddress;
+            // document.getElementById("walletAddress").innerText = walletAddress;
 
             // Connect to the contract
             provider = new ethers.BrowserProvider(window.ethereum);
@@ -54,6 +54,9 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
             contract = new ethers.Contract(contractAddress, contractABI, signer);
 
             console.log("Successfully Connected", walletAddress);
+
+            // Load characters after connecting
+            loadCharacters();
 
         } catch (error) {
             console.error("Connected Failed", error);
@@ -65,7 +68,6 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
 
 // Send transaction to the contract
 document.getElementById("sendTransaction").addEventListener("click", async () => {
-    // console.log("Transaction sent!");
     const fileInput = document.getElementById("uploadImage");
     if (!fileInput.files.length) {
         alert("Please select an image!");
@@ -97,6 +99,42 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
     } catch (error) {
         console.error("Transaction failed:", error);
     }
+});
+
+
+// Load characters or display placeholder
+async function loadCharacters() {
+    const galleryGrid = document.getElementById("galleryGrid");
+
+    if (!contract) {
+        galleryGrid.innerHTML = `
+            <div class="placeholder" style="display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%;">
+                <img src="./src/images/placeHolder.png" alt="Placeholder" onerror="this.style.display='none';" style="max-width: 200px; margin-bottom: 20px;">
+                <p style="color: lightgray; opacity: 0.6; font-size: 24px; font-weight: bold; text-align: center;">Wallet not connected</p>
+            </div>
+        `;
+        return;
+    }
+    try {
+        const result = await contract.getAllCharacters();
+
+        const characters = result.map(character => ({
+            image: character.image,
+            creator: character.creator,
+            owner: character.owner,
+            description: character.description,
+            score_c: character.score_c.toNumber(),
+            score_t: character.score_t.toNumber(),
+            score_a: character.score_a.toNumber(),
+            price: character.price.toNumber() / 1e18
+        }));
+
+        populateCharacterGallery(characters);
+    } catch (error) {
+        console.error("調用合約失敗:", error);
+    }
+}
+
 // Populate the character gallery dynamically
 function populateCharacterGallery(characters) {
     const galleryGrid = document.getElementById("galleryGrid");
@@ -155,20 +193,4 @@ async function processImage(file, mimeType) {
         reader.readAsDataURL(file);
     });
 }
-try {
-    const result = await contract.getAllCharacters();
-    const characters = result.map(character => ({
-    image: character.image,
-    creator: character.creator,
-    owner: character.owner,
-    description: character.description,
-    score_c: character.score_c.toNumber(),
-    score_t: character.score_t.toNumber(),
-    score_a: character.score_a.toNumber(),
-    price: character.price.toNumber() / 1e18
-}));
-populateCharacterGallery(characters);
-} catch (error) {
-    console.error("調用合約失敗:", error);
-}
-});
+loadCharacters();
