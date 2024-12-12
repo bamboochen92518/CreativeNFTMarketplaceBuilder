@@ -1,0 +1,140 @@
+{
+    "address": "0xfCeAF2ADb16d24428A952087fc216085bF06C7E7",
+    "abi": [
+        {
+            "inputs": [
+                {   
+                    "internalType": "address",
+                    "name": "creator", 
+                    "type": "address" 
+                },
+                {   
+                    "internalType": "string",
+                    "name": "image", 
+                    "type": "string" 
+                }
+            ],
+            "name": "uploadCharacter",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "NFTID",
+                    "type": "uint256"
+                }
+            ],
+            "name": "regradeCharacter",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        }, 
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "NFTID",
+                    "type": "uint256"
+                }
+            ],
+            "name": "bidCharacter",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "NFTID",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "address",
+                    "name": "bidder",
+                    "type": "address"
+                }
+            ],
+            "name": "sellCharacter",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "NFTID",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "string",
+                    "name": "reason",
+                    "type": "string"
+                }
+            ],
+            "name": "reportCharacter",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getAllCharacters",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "string",
+                            "name": "image",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "creator",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "owner",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "description",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "score_c",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "score_t",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "score_a",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "price",
+                            "type": "uint256"
+                        }
+                    ],
+                    "internalType": "struct Character[]",
+                    "name": "",
+                    "type": "tuple[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ]
+}

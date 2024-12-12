@@ -1,69 +1,8 @@
-## Foundry
+# CNMB: Creative NFT Marketplace Builder
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+![image info](./img/workflow.png)
 
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+CNMB is a decentralized application (dApp) that allows users to create their own characters, which are graded by AI and minted as NFTs. These characters have the potential to integrate with gaming in the future, while also being appreciated as unique works of art today. We’ve selected Gemini as the grading model and use our native token for bidding and trading these NFTs. By leveraging Chainlink, we connect on-chain and off-chain data to ensure seamless functionality. We believe this innovative platform has the potential to make a significant impact in today's digital landscape.
 
 ### Install package
 
@@ -74,7 +13,13 @@ $ forge install smartcontractkit/foundry-chainlink-toolkit
 ```
 
 **About npm**
-```
+```shell
 $ cd webpage
 $ npm install
+```
+
+### Run webpage
+```shell
+$ cd webpage
+# node server.js
 ```

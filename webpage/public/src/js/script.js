@@ -1,146 +1,22 @@
-// 合約地址與 ABI
-const contractAddress = "0xfCeAF2ADb16d24428A952087fc216085bF06C7E7";
-const contractABI = [
-    {
-        "inputs": [
-            {   
-                "internalType": "address",
-                "name": "creator", 
-                "type": "address" 
-            },
-            {   
-                "internalType": "string",
-                "name": "image", 
-                "type": "string" 
-            }
-        ],
-        "name": "uploadCharacter",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "NFTID",
-                "type": "uint256"
-            }
-        ],
-        "name": "regradeCharacter",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    }, 
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "NFTID",
-                "type": "uint256"
-            }
-        ],
-        "name": "bidCharacter",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "NFTID",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "bidder",
-                "type": "address"
-            }
-        ],
-        "name": "sellCharacter",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "NFTID",
-                "type": "uint256"
-            },
-            {
-                "internalType": "string",
-                "name": "reason",
-                "type": "string"
-            }
-        ],
-        "name": "reportCharacter",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getAllCharacters",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "image",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "creator",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "owner",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "score_c",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "score_t",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "score_a",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct Character[]",
-                "name": "",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    }
-];
-
-// 全局變數
+// Global Variable
 let provider, signer, contract;
+let contractAddress, contractABI;
 
+// Fetch Smart Contract and ABI code
+fetch('./src/js/contract.json')
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(contractDetail => {
+        contractAddress = contractDetail.address;
+        contractABI = contractDetail.abi;
+    })
+    .catch(error => console.error('Error loading JSON:', error));
+
+// Fuji testnet parameters
 const AVALANCHE_TESTNET_PARAMS = {
     chainId: '0xA869',
     chainName: 'Avalanche Testnet C-Chain',
@@ -153,7 +29,7 @@ const AVALANCHE_TESTNET_PARAMS = {
     blockExplorerUrls: ['https://testnet.snowtrace.io/']
 }
 
-// 1. 連接 MetaMask 錢包
+// Connect to Metamask wallet
 document.getElementById("connectWallet").addEventListener("click", async () => {
     if (typeof window.ethereum !== "undefined") {
         try {
@@ -173,17 +49,17 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
             document.getElementById("walletAddress").innerText = walletAddress;
 
             // Connect to the contract
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const signer = await provider.getSigner();
-            const contract = new ethers.Contract(contractAddress, contractABI, signer);
+            provider = new ethers.BrowserProvider(window.ethereum);
+            signer = await provider.getSigner();
+            contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-            console.log("MetaMask 已連接:", walletAddress);
+            console.log("Successfully Connected", walletAddress);
 
         } catch (error) {
-            console.error("錢包連接失敗:", error);
+            console.error("Connected Failed", error);
         }
     } else {
-        alert("請安裝 MetaMask 擴充套件！");
+        alert("Do not install MetaMask plugin");
     }
 });
 
@@ -235,22 +111,38 @@ async function processImage(file, mimeType) {
 
 
 // 3. 發送交易到智能合約
+// Send transaction to the contract
 document.getElementById("sendTransaction").addEventListener("click", async () => {
-	if (!contract) {
-		alert("請先連接錢包！");
-		return;
-	}
-	try {
-		// 發送交易到合約
-		const tx = await contract.yourWriteFunctionName(arg1, arg2); // 替換方法名稱與參數
-		document.getElementById("transactionHash").innerText = tx.hash;
-		console.log("交易已發送:", tx.hash);
+    const fileInput = document.getElementById("uploadImage");
+    if (!fileInput.files.length) {
+        alert("Please select an image!");
+        return;
+    }
 
-		// 等待交易確認
-		const receipt = await tx.wait();
-		console.log("交易已確認:", receipt);
-	} catch (error) {
-		console.error("交易失敗:", error);
-	}
+    const file = fileInput.files[0];
+    const mimeType = file.type;
+
+    if (!contract) {
+        alert("Please connect your wallet first!");
+        return;
+    }
+
+    try {
+        // Process the image
+        const processedImage = await processImage(file, mimeType);
+
+        // Call the contract's function with msg.sender and processed image data
+        const tx = await contract.uploadCharacter(processedImage.inlineData.data, {
+            value: ethers.parseUnits("0.01", "ether"), // Example: send 0.01 ETH with the transaction
+        });
+
+        document.getElementById("transactionHash").innerText = tx.hash;
+        console.log("Transaction sent:", tx.hash);
+
+        // Wait for transaction confirmation
+        const receipt = await tx.wait();
+        console.log("Transaction confirmed:", receipt);
+    } catch (error) {
+        console.error("Transaction failed:", error);
+    }
 });
-
