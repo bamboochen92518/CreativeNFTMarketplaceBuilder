@@ -232,12 +232,12 @@ function populateCharacterGallery(characters) {
             </div>
             <div class="card-actions">
                 <div class="view-btn">
-                    <a href="index.html" style="text-decoration:none">View</a>
+                    <a href="orderbook.html" style="text-decoration:none">View</a>
                 </div>
             </div>
         `;
         characterCard.addEventListener("click", function () {
-            window.open("index.html", '_blank').focus();
+            window.open("orderbook.html", '_blank').focus();
         });
 
         galleryGrid.appendChild(characterCard);
