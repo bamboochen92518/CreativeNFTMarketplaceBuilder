@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ContractContextProvider } from "@/context/contract-context";
 import "./globals.css";
+import Navbar from "@/compnents/navbar";
+import React from "react";
 
 export const metadata: Metadata = {
   title: {
@@ -15,6 +17,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }): React.JSX.Elem
     <html lang="en">
       <body className="text-[#d4d2d5] bg-[#1c1c29] flex flex-col min-h-screen">
         <ContractContextProvider>
+          <Navbar />
           <div className="flex-grow flex justify-center items-center">
             {children}
           </div>
