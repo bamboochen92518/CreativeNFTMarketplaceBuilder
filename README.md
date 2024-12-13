@@ -26,6 +26,9 @@ $ forge create --rpc-url $FUJI_RPC_URL --private-key $PRIVATE_KEY src/CharacterN
 You should first export `FUJI_RPC_URL` and `PRIVATE_KEY`. 
 After deploying the contract, you need to add your contract address to `webpage/public/src/js/contract.json`.
 
+### Structure
+nft related functions: `src/context/contract-context.tsx` & `src/utils.tsx`
+
 ### Run webpage
 
 - first time
