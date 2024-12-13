@@ -25,18 +25,34 @@ const Page = (): React.JSX.Element => {
       />
       <DescriptionBlock
         title="Tokenomics"
-        content={`CNMC will serve as the official token for the CNMB platform, playing a vital role in driving its growth and supporting its continuous development. It's not just a token—it's the backbone of the CNMB ecosystem, empowering users and creators alike to engage seamlessly within the platform.
-        For users, CNMC will act as the primary currency, enabling effortless transactions such as buying, selling, and trading NFTs. Whether you're a collector acquiring unique digital assets or an artist monetizing your creative work, CNMC ensures a smooth and efficient marketplace experience. By integrating CNMC into the platform, we aim to create a dynamic, user-driven ecosystem that fosters creativity, innovation, and meaningful exchanges within the NFT community.`}
+        content={(
+          <div className='flex flex-col gap-4'>
+            <p>
+              CNMC will serve as the official token for the CNMB platform, playing a vital role in driving its growth and supporting its continuous development. It’s not just a token—it’s the backbone of the CNMB ecosystem, empowering users and creators alike to engage seamlessly within the platform.
+            </p>
+            <p>
+              For users, CNMC will act as the primary currency, enabling effortless transactions such as buying, selling, and trading NFTs. Whether you're a collector acquiring unique digital assets or an artist monetizing your creative work, CNMC ensures a smooth and efficient marketplace experience. By integrating CNMC into the platform, we aim to create a dynamic, user-driven ecosystem that fosters creativity, innovation, and meaningful exchanges within the NFT community.</p>
+          </div>
+        )}
         imageSrc="/images/CNMC.png"
         imageAlt="Placeholder Image"
         reverse
       />
       <DescriptionBlock
         title="Future Work"
-        content={`Looking ahead, CNMB is designed to empower artists by providing them with a platform to showcase and monetize their creativity, while CNMC will serve as the driving force that sustains and supports the CNMB ecosystem. Together, they create a symbiotic relationship that fosters innovation, collaboration, and growth.
-        Our mission goes beyond just building a platform; we are committed to making a positive impact on the world. By supporting artists and connecting them with a global audience, we aim to create opportunities, inspire creativity, and bring communities closer together. We envision a brighter, more inclusive future where art and technology intersect to drive meaningful change.
-        <br /><br />
-        Join us on this transformative journey, as we work together to make the world a better, more creative place. The future is bright, and with your support, the possibilities are limitless.`}
+        content={(
+          <div className='flex flex-col gap-4'>
+            <p>
+              Looking ahead, CNMB is designed to empower artists by providing them with a platform to showcase and monetize their creativity, while CNMC will serve as the driving force that sustains and supports the CNMB ecosystem. Together, they create a symbiotic relationship that fosters innovation, collaboration, and growth.
+            </p>
+            <p>
+              Our mission goes beyond just building a platform; we are committed to making a positive impact on the world. By supporting artists and connecting them with a global audience, we aim to create opportunities, inspire creativity, and bring communities closer together. We envision a brighter, more inclusive future where art and technology intersect to drive meaningful change.
+            </p>
+            <p>
+              Join us on this transformative journey, as we work together to make the world a better, more creative place. The future is bright, and with your support, the possibilities are limitless.
+            </p>
+          </div>
+        )}
         imageSrc="/images/future.png"
         imageAlt="Placeholder Image"
       />
