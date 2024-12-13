@@ -22,8 +22,8 @@ const BidCard = ({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-white">
-      <div className="max-w-3xl w-full bg-gradient-to-b from-gray-600 to-gray-800 shadow-lg rounded-lg overflow-hidden">
+    <div className="flex items-center justify-center text-white">
+      <div className="w-full bg-gradient-to-b from-gray-600 to-gray-800 shadow-lg rounded-lg overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="relative">
             <Image
@@ -58,7 +58,7 @@ const BidCard = ({
               </div>
               <button
                 type="submit"
-                className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition"
+                className="w-full mt-40 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition"
               >
                 Submit Bid
               </button>

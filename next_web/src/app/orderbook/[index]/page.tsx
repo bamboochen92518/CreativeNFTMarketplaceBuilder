@@ -5,6 +5,7 @@ import { getCharacterByIndex } from "@/utils";
 import CharacterCard from "@/components/character-card";
 import { useContract } from "@/context/contract-context";
 import { CharacterType } from "@/lib/definitions";
+import BidCard from "@/components/bid-card";
 
 const Page = (): React.JSX.Element => {
   const { contract } = useContract();
@@ -60,7 +61,7 @@ const Page = (): React.JSX.Element => {
     return <div>Character is not defined.</div>;
   }
 
-  return <CharacterCard character={character} />;
+  return <BidCard character={character} />;
 };
 
 export default Page;
