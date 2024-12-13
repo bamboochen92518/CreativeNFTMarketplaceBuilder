@@ -31,7 +31,6 @@ const AVALANCHE_TESTNET_PARAMS = {
 
 document.addEventListener('DOMContentLoaded', function () {
     const sections = document.querySelectorAll('.section');
-
     function isElementInViewport(element) {
         const rect = element.getBoundingClientRect();
         return (rect.top >= -rect.height/2 && rect.bottom <= window.innerHeight + rect.height*0.5);
@@ -48,44 +47,20 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
-    // Initial check when the page loads
     handleScroll();
-
-    // Add scroll event listener to trigger the appearance of sections
     window.addEventListener('scroll', handleScroll);
 });
-// document.addEventListener('DOMContentLoaded', function () {
-//     let features = document.getElementsByClassName('feature-item');
-//     let f = document.getElementById('features');
-//     function isElementInViewport(element) {
-//         const rect = element.getBoundingClientRect();
-//         return (rect.top >= -rect.height/2 && rect.bottom <= window.innerHeight + rect.height*0.5);
-//     }
-//     for(let li = 0; li < features.length; li++) {
-//       features[li].addEventListener('click', function () {
-//         if(isElementInViewport(f))
-//           features[li].classList.toggle('active');
-//       });
-//     }
-// });
-
-// Connect to Metamask wallet
 document.getElementById("connectWallet").addEventListener("click", async () => {
     if (typeof window.ethereum !== "undefined") {
         try {
             accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-
             if (accounts.length === 0) {
                 throw new Error("No accounts found. Please unlock your wallet.");
             }
-
-            // Request to switch to the selected Avalanche network
             await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [AVALANCHE_TESTNET_PARAMS]
             })
-
             const walletAddress = accounts[0];
             provider = new ethers.BrowserProvider(window.ethereum);
             signer = await provider.getSigner();
@@ -159,20 +134,11 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
 });
 
 
+
 async function loadCharacters() {
     const intro = document.getElementById("intro");
     if (intro) intro.style.display = 'none';
     const galleryGrid = document.getElementById("galleryGrid");
-
-    // if (!contract) {
-    //     galleryGrid.innerHTML = `
-    //         <div class="placeholder">
-    //             <img src="./src/images/placeHolder.png" alt="Placeholder" onerror="this.style.display='none';">
-    //             <p>Wallet not connected</p>
-    //         </div>
-    //     `;
-    //     return;
-    // }
     try {
         const result = await contract.getAllCharacters();
         const characters = result.map(character => ({
@@ -242,20 +208,20 @@ function populateCharacterGallery(characters) {
                     <img src="data:image/png;base64,${character.image}" alt="Character Image">
                 </div>
                 <div class="card-details">
-                    <p><strong>Creator:</strong><br>${character.creator}</p>
-                    <p><strong>Owner:</strong><br>${character.owner}</p>
-                    <p><strong>Description:</strong> ${character.description}</p>
-                    <p><strong>Scores:</strong> C: ${character.score_c}, T: ${character.score_t}, A: ${character.score_a}</p>
+                    <p><strong>Scores:</strong><br> C: ${character.score_c}, T: ${character.score_t}, A: ${character.score_a}</p>
                     <p><strong>Price:</strong> ${character.price} AVAX</p>
                 </div>
             </div>
             <div class="card-actions">
-                <button class="shout-price-btn">Shout Price</button>
-                <button class="report-btn">Report</button>
+                <!-- <button class="shout-price-btn">Shout Price</button> -->
+                <!-- <button class="report-btn">Report</button> -->
+                <div class="view-btn">
+                    <a href="index.html" style="text-decoration:none">View</a>
+                </div>
             </div>
         `;
         characterCard.addEventListener("click", function () {
-            characterCard.classList.toggle("expanded");
+            window.open("index.html", '_blank').focus();
         });
 
         galleryGrid.appendChild(characterCard);

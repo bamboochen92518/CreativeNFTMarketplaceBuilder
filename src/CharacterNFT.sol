@@ -146,25 +146,19 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
 
         return result;
     }
+    
+    // Retrieves all bid
+    function getAllBids(uint256 NFTID) external view returns (address[] memory, uint256[] memory) {
+        uint256 count = bidders[NFTID].length;
+        address[] memory addresses = new address[](count);
+        uint256[] memory amounts = new uint256[](count);
 
-    // Helper function to convert uint256 to string
-    function toString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) {
-            return "0";
+        for (uint256 i = 0; i < count; i++) {
+            addresses[i] = bidders[NFTID][i];
+            amounts[i] = bids[NFTID][bidders[NFTID][i]];
         }
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits--;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
+
+        return (addresses, amounts);
     }
 
     // ChainLink function

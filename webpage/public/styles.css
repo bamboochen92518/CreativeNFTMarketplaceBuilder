@@ -367,6 +367,7 @@ body {
 .character-card:hover {
     transform: scale(1.02);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.8); 
+    cursor: pointer;
 }
 
 .card-image img {
@@ -380,7 +381,7 @@ body {
 }
 
 .card-details {
-    padding-top: 12px;
+    padding-top: 50%;
 }
 
 .card-details p {
@@ -412,6 +413,17 @@ body {
 }
 
 .report-btn:hover {
+    background-color: #ff4d4f;
+    color: #fff;
+    cursor: pointer;
+}
+.view-btn {
+    border: 2px solid #ff4d4f;
+    color: #ff4d4f;
+    background-color: transparent;
+}
+
+.view-btn:hover {
     background-color: #ff4d4f;
     color: #fff;
     cursor: pointer;
