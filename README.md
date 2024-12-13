@@ -28,7 +28,12 @@ After deploying the contract, you need to add your contract address to `webpage/
 
 ### Run webpage
 
+- first time
 ```shell
-$ cd webpage
-$ node server.js
+npm ci
+```
+
+```shell
+$ cd next_web
+$ npm run dev
 ```
