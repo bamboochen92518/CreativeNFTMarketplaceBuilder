@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ContractContextProvider } from "@/context/contract-context";
 import "./globals.css";
-import Navbar from "@/compnents/navbar";
+import Navbar from "@/components/navbar";
 import React from "react";
 
 export const metadata: Metadata = {

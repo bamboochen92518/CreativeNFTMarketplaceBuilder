@@ -6,7 +6,7 @@ const links = [
 ];
 
 const Navbar = (): React.JSX.Element => {
-  const { address, connectWallet } = useContract();
+  const { accounts, connectWallet } = useContract();
   return (
     <nav className="flex justify-between items-center p-8">
       <div className="flex items-end gap-4">
@@ -22,8 +22,8 @@ const Navbar = (): React.JSX.Element => {
         </ul>
       </div>
       <div>
-        {address ? (
-          <p className="text-sm">Address: {address}</p>
+        {accounts.length > 0 ? (
+          <p className="text-sm">Account: {accounts[0]}</p>
         ) : (
           <button
             className="prone text-center tooltip tooltip-bottom inline-flex items-center"
