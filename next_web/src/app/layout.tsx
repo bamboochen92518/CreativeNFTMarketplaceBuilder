@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
   return (
     <html lang="en">
-      <body className="text-[#d4d2d5] bg-[#1c1c29] flex flex-col min-h-screen">
+      <body className="text-slate-50 bg-slate-900 flex flex-col min-h-screen">
         <ContractContextProvider>
           <Navbar />
           <div className="flex-grow flex justify-center items-center">

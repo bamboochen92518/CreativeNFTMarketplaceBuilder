@@ -1,42 +1,45 @@
 'use client';
-import { useContract } from "@/context/contract-context";
-import CharacterCard from "@/components/character-card";
-import { getAllCharacters } from "@/utils";
-import { useState, useEffect } from "react";
-import { CharacterType } from "@/lib/definitions";
+import React from 'react';
+import DescriptionBlock from '@/components/description-block';
 
 const Page = (): React.JSX.Element => {
-  const { contract } = useContract();
-  const [characters, setCharacters] = useState<CharacterType[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!contract) {
-      setError("Contract is not defined.");
-      return;
-    }
-
-    getAllCharacters(contract)
-      .then((characters) => {
-        // console.log("Characters fetched:", characters);
-        setCharacters(characters);
-        setError(null);
-      })
-      .catch((error) => {
-        console.error("Error fetching characters:", error);
-        setError("Error occurred when getting characters.");
-      });
-  }, [contract]);
-
-  if (error) {
-    return <>{error}</>;
-  }
-
   return (
-    <div className="flex items-start justify-center gap-4">
-      {characters.map((character, index) => (
-        <CharacterCard key={index} character={character} />
-      ))}
+    <div id="intro" className="p-8">
+      <DescriptionBlock
+        title="Introduction"
+        content={(
+          <div className='flex flex-col gap-4'>
+            <p>
+              Welcome to the Museum of the Future, where creativity meets innovation! We’re thrilled to introduce the Creative NFT Marketplace Builder, your gateway to a new era of artistic expression and digital ownership. This is not just a marketplace—it’s a platform designed for creators like you to bring your ideas to life, transform them into unique NFTs, and share them with a global community that values creativity and originality.
+            </p>
+            <p>
+              Whether you’re an experienced artist or just beginning your journey, our platform empowers you to showcase your work, monetize your creativity, and connect with collectors from all over the world. With just a wallet and a few clicks, you can turn your vision into a reality, build your own brand, and leave a lasting mark in the digital art landscape.
+            </p>
+            <p>
+              At the Museum of the Future, we believe in breaking barriers and creating opportunities for artists of all backgrounds to thrive. Join us on this exciting adventure and take your first step toward redefining how art is shared, appreciated, and valued. Let’s shape the future together!
+            </p>
+          </div>
+        )}
+        imageSrc="/images/CNMB.png"
+        imageAlt="Placeholder Image"
+      />
+      <DescriptionBlock
+        title="Tokenomics"
+        content={`CNMC will serve as the official token for the CNMB platform, playing a vital role in driving its growth and supporting its continuous development. It's not just a token—it's the backbone of the CNMB ecosystem, empowering users and creators alike to engage seamlessly within the platform.
+        For users, CNMC will act as the primary currency, enabling effortless transactions such as buying, selling, and trading NFTs. Whether you're a collector acquiring unique digital assets or an artist monetizing your creative work, CNMC ensures a smooth and efficient marketplace experience. By integrating CNMC into the platform, we aim to create a dynamic, user-driven ecosystem that fosters creativity, innovation, and meaningful exchanges within the NFT community.`}
+        imageSrc="/images/CNMC.png"
+        imageAlt="Placeholder Image"
+        reverse
+      />
+      <DescriptionBlock
+        title="Future Work"
+        content={`Looking ahead, CNMB is designed to empower artists by providing them with a platform to showcase and monetize their creativity, while CNMC will serve as the driving force that sustains and supports the CNMB ecosystem. Together, they create a symbiotic relationship that fosters innovation, collaboration, and growth.
+        Our mission goes beyond just building a platform; we are committed to making a positive impact on the world. By supporting artists and connecting them with a global audience, we aim to create opportunities, inspire creativity, and bring communities closer together. We envision a brighter, more inclusive future where art and technology intersect to drive meaningful change.
+        <br /><br />
+        Join us on this transformative journey, as we work together to make the world a better, more creative place. The future is bright, and with your support, the possibilities are limitless.`}
+        imageSrc="/images/future.png"
+        imageAlt="Placeholder Image"
+      />
     </div>
   );
 }

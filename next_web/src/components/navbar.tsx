@@ -5,6 +5,7 @@ import CreateChracaterBox from "./create-character-box";
 
 const links = [
   { href: "/", text: "Home" },
+  { href: "/all-nfts", text: "All NFTs" },
 ];
 
 const Navbar = (): React.JSX.Element => {
