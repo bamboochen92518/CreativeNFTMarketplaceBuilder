@@ -19,6 +19,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
     // About NFT
     struct Character {
         string image;
+        string name;
         address creator;
         address owner;
         string description;
@@ -49,7 +50,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
     constructor() ERC721("CharacterNFT", "CNFT") FunctionsClient(router) ConfirmedOwner(msg.sender) {}
 
     // Users can upload their self-created character by sending sufficient native tokens
-    function uploadCharacter(address creator, string memory image) external payable {
+    function uploadCharacter(address creator, string memory image, string memory name) external payable {
         require(msg.value >= UPLOAD_FEE, "Not enough ether sent"); // Ensure sufficient ether is sent
 
         uint256 newCharacterId = characterCounter++;
@@ -57,6 +58,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
 
         characters[newCharacterId] = Character({
             image: image,
+            name: name,
             creator: creator,
             owner: creator,
             description: "Grading ...",
