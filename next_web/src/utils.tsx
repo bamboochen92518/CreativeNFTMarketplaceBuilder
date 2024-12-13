@@ -21,6 +21,16 @@ export const getAllCharacters = async (contract: ethers.Contract): Promise<Chara
   }
 }
 
+export const getCharactersByAccount = async (contract: ethers.Contract, account: string): Promise<CharacterType[]> => {
+  try {
+    const characters: CharacterType[] = await contract.getAllCharacters(contract);
+    return characters.filter(character => character.owner.toLowerCase() === account.toLowerCase());
+  } catch (error) {
+    console.error("Failed to fetch the account's characters: ", error);
+    return [];
+  }
+}
+
 export const createCharacter = async (contract: ethers.Contract, account: string, file: File): Promise<void> => {
   try {
     const mimeType = file.type;

@@ -12,8 +12,8 @@ const DescriptionBlock = ({
 ): React.JSX.Element => {
   return (
     <section className={`
-      section flex justify-between items-center opacity-100 transform-none transition-opacity duration-500 
-      ease-in-out mb-8 p-8 bg-gray-800 border border-gray-300 rounded-lg shadow-lg text-left
+      section flex justify-between items-center opacity-100 transition-opacity duration-500 
+      ease-in mb-8 p-8 bg-gray-800 border border-gray-300 rounded-lg shadow-lg text-left
       ${reverse ? 'flex-row-reverse' : ''}
     `}>
       <div className="flex-1">

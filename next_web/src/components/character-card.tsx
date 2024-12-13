@@ -6,9 +6,9 @@ const CharacterCard = ({ character }: { character: CharacterType }): React.JSX.E
     <div
       className="
               flex flex-col justify-between
-              backdrop-blur-sm rounded-xl w-96 h-full shadow-xl bg-stone-200 bg-opacity-40 py-8
-              hover:bg-white hover:bg-opacity-40
-              text-black
+              backdrop-blur-sm rounded-xl w-96 h-full shadow-xl bg-slate-900 outline outline-4 outline-slate-100
+              overflow-hidden
+              hover:outline-slate-500
             "
     >
       <Image

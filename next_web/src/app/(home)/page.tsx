@@ -31,7 +31,7 @@ const Page = (): React.JSX.Element => {
               CNMC will serve as the official token for the CNMB platform, playing a vital role in driving its growth and supporting its continuous development. It’s not just a token—it’s the backbone of the CNMB ecosystem, empowering users and creators alike to engage seamlessly within the platform.
             </p>
             <p>
-              For users, CNMC will act as the primary currency, enabling effortless transactions such as buying, selling, and trading NFTs. Whether you're a collector acquiring unique digital assets or an artist monetizing your creative work, CNMC ensures a smooth and efficient marketplace experience. By integrating CNMC into the platform, we aim to create a dynamic, user-driven ecosystem that fosters creativity, innovation, and meaningful exchanges within the NFT community.</p>
+              For users, CNMC will act as the primary currency, enabling effortless transactions such as buying, selling, and trading NFTs. Whether you’re a collector acquiring unique digital assets or an artist monetizing your creative work, CNMC ensures a smooth and efficient marketplace experience. By integrating CNMC into the platform, we aim to create a dynamic, user-driven ecosystem that fosters creativity, innovation, and meaningful exchanges within the NFT community.</p>
           </div>
         )}
         imageSrc="/images/CNMC.png"
