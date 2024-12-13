@@ -3,7 +3,7 @@ let provider, signer, contract, accounts;
 let contractAddress, contractABI;
 
 // Fetch Smart Contract and ABI code
-fetch('./src/js/contract.json')
+fetch('/src/js/contract.json')
     .then(response => {
         if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
@@ -175,6 +175,44 @@ async function loadCharacters() {
         console.error("調用合約失敗:", error);
     }
 }
+
+document.getElementById("loadMyCharacters")?.addEventListener("click", async () => {
+    loadMyCharacters();
+});
+async function loadMyCharacters() {
+    if (!contract) {
+        alert("Please connect your wallet first!");
+        return;
+    }
+
+    try {
+        const result = await contract.getAllCharacters();
+
+        // Filter characters where the owner matches the connected wallet address
+        const myCharacters = result
+            .map(character => ({
+                image: character.image,
+                creator: character.creator,
+                owner: character.owner,
+                description: character.description,
+                score_c: character.score_c,
+                score_t: character.score_t,
+                score_a: character.score_a,
+                price: (BigInt(character.price) / BigInt(1e18))
+            }))
+            .filter(character => character.owner.toLowerCase() === accounts[0].toLowerCase());
+
+        // Display only the user's characters
+        populateCharacterGallery(myCharacters);
+
+        if (myCharacters.length === 0) {
+            console.log("No characters found for this wallet.");
+        }
+    } catch (error) {
+        console.error("Failed to load your characters:", error);
+    }
+}
+
 
 function populateCharacterGallery(characters) {
     const galleryGrid = document.getElementById("galleryGrid");

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNMB | Orderbook</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+    <script src="/src/js/script.js" type="module"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggleSidebar = document.getElementById("toggleSidebar");
+            const sidebar = document.getElementById("sidebar");
+            const uploadModal = document.getElementById("uploadModal");
+            const modalOverlay = document.getElementById("modalOverlay");
+            const uploadButton = document.getElementById("uploadCharacter");
+
+            toggleSidebar.addEventListener("click", () => {
+                sidebar.classList.toggle("active");
+            });
+
+            uploadButton.addEventListener("click", () => {
+                uploadModal.classList.add("active");
+                modalOverlay.classList.add("active");
+            });
+
+            modalOverlay.addEventListener("click", () => {
+                uploadModal.classList.remove("active");
+                modalOverlay.classList.remove("active");
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="toggleSidebar">☰</button>
+    <div class="main-container">
+        <div id="sidebar">
+            <button id="connectWallet">Connect Wallet</button>
+            <button id="uploadCharacter">Upload Character</button>
+        </div>
+        <div id="modalOverlay"></div>
+        <div id="uploadModal">
+            <h3>Upload Character</h3>
+            <input type="file" id="uploadImage" accept="image/*">
+            <button id="sendTransaction">Create!</button>
+        </div>
+        <div id="characterGallery">
+            <button id="loadMyCharacters">Load My Characters</button>
+        </div>
+        <div id="galleryGrid"></div>
+    </div>
+</body>
+</html>
+
+

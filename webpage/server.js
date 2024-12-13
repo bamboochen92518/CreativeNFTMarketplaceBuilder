@@ -11,6 +11,10 @@ app.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+app.get("/orderbook", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "orderbook.html"));
+});
+
 app.listen(PORT, () => {
 	console.log(`伺服器已啟動：http://localhost:${PORT}`);
 });
