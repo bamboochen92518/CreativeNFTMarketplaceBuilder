@@ -133,11 +133,13 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
     }
 });
 
-
+let mode = -1;
 
 async function loadCharacters() {
     const intro = document.getElementById("intro");
-    if (intro) intro.style.display = 'none';
+    intro.style.display = 'none';
+    const filter = document.getElementById("filter");
+    filter.style.display = 'flex';
     const galleryGrid = document.getElementById("galleryGrid");
     try {
         const result = await contract.getAllCharacters();
@@ -151,6 +153,22 @@ async function loadCharacters() {
             score_a: character.score_a,
             price: (BigInt(character.price) / BigInt(1e18))
         }));
+        switch(mode) {
+            case 0:
+                characters.sort((a, b) => b.price - a.price);
+                break;
+            case 1:
+                characters.sort((a, b) => b.score_c - a.score_c);
+                break;
+            case 2:
+                characters.sort((a, b) => b.score_t - a.score_t);
+                break;
+            case 3:
+                characters.sort((a, b) => b.score_a - a.score_a);
+                break;
+            default:
+                break;
+        }
 
         populateCharacterGallery(characters);
     } catch (error) {
@@ -213,18 +231,38 @@ function populateCharacterGallery(characters) {
                 </div>
             </div>
             <div class="card-actions">
-                <!-- <button class="shout-price-btn">Shout Price</button> -->
-                <!-- <button class="report-btn">Report</button> -->
                 <div class="view-btn">
-                    <a href="index.html" style="text-decoration:none">View</a>
+                    <a href="orderbook.html" style="text-decoration:none">View</a>
                 </div>
             </div>
         `;
         characterCard.addEventListener("click", function () {
-            window.open("index.html", '_blank').focus();
+            window.open("orderbook.html", '_blank').focus();
         });
 
         galleryGrid.appendChild(characterCard);
     });
 }
 // loadCharacters();
+let select = document.querySelector("#sort-options");
+select.addEventListener("change", selectFun);
+function selectFun() {
+    const switchValue = select.options[select.selectedIndex];
+    switch (switchValue) {
+        case "value":
+            mode = 0;
+            break;
+        case "cscore":
+            mode = 1;
+            break;
+        case "tscore":
+            mode = 2;
+            break;
+        case "ascore":
+            mode = 3;
+            break;
+        default:
+            return;
+    }
+    loadCharacters();
+}
