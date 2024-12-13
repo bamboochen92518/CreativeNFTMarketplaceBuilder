@@ -3,24 +3,27 @@ import { CharacterType } from "@/lib/definitions";
 
 const CharacterCard = ({ character }: { character: CharacterType }): React.JSX.Element => {
   return (
-    <div
-      className="
-              flex flex-col justify-between
-              backdrop-blur-sm rounded-xl w-96 h-full shadow-xl bg-slate-900 outline outline-4 outline-slate-100
-              overflow-hidden
-              hover:outline-slate-500
-            "
-    >
+    <div className="flex items-center justify-center text-white">
+      <div className="max-w-lg bg-gray-600 shadow-lg rounded-lg overflow-hidden">
       <Image
         src={`data:image/png;base64,${character.image}`}
         alt="Character Image"
-        width={500}
-        height={500}
+        width={100}
+        height={100}
+          className="w-full h-80 object-cover"
       />
-      <div className="p-4">
-        <p>Creator: {character.creator}</p>
-        <p>Owner: {character.owner}</p>
-        <p>Description: {character.description}</p>
+        <div className="p-6">
+          <h1 className="text-2xl font-bold text-gray-100">NFT</h1>
+          <p className="text-gray-400 mt-2">{character.description}</p>
+          <div className="flex justify-between items-center mt-4">
+            <p className="text-xl font-semibold text-green-400">
+              {character.price} {"ETH"}
+            </p>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
+              Buy Now
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
