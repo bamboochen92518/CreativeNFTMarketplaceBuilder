@@ -182,7 +182,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
     string source = "const prompt = \"Please generate a 15-20 word description of this character (do not mention boxy, pixelated), and rank it from 1 to 5 respectively for Creativity, Technique, and Aesthetics. The output should be in JSON format, like: {\"Description\": str, \"Creativity\": int, \"Technique\": int, \"Aesthetics\": int}.\";"
         "const image = args[0];"
         "const geminiRequest = Functions.makeHttpRequest({"
-        "    url: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDb9YMKlnr8hAfA_RdWklDX9o4ulsrhw34\","
+        "    url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${secrets.googleApiKey}`,"
         "    method: \"POST\","
         "    headers: {\"Content-Type\": \"application/json\"},"
         "    data: {\"contents\": [{\"parts\": [{\"text\": prompt}, {\"inline_data\": {\"mime_type\": \"image/jpg\", \"data\": image}}]}]},"
@@ -193,7 +193,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
         "return Functions.encodeString(result);";
 
     //Callback gas limit
-    uint32 gasLimit = 300000;
+    uint32 gasLimit = 300_000;
 
     // donID - Hardcoded for Sepolia
     // Check to get the donID for your supported network https://docs.chain.link/chainlink-functions/supported-networks
@@ -205,22 +205,11 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
      * @param args The arguments to pass to the HTTP request
      * @return requestId The ID of the request
      */
-    function sendRequest(
-        uint64 subscriptionId,
-        string[] memory args
-    ) internal returns (bytes32 requestId) {
+    function sendRequest(uint64 subscriptionId, string[] memory args) internal returns (bytes32 requestId) {
         FunctionsRequest.Request memory req;
-        req.initializeRequestForInlineJavaScript(source); // Initialize the request with JS code
-        if (args.length > 0) req.setArgs(args); // Set the arguments for the request
-
-        // Send the request and store the request ID
-        s_lastRequestId = _sendRequest(
-            req.encodeCBOR(),
-            subscriptionId,
-            gasLimit,
-            donID
-        );
-
+        req.initializeRequestForInlineJavaScript(source);
+        if (args.length > 0) req.setArgs(args);
+        s_lastRequestId = _sendRequest(req.encodeCBOR(), subscriptionId, gasLimit, donID);
         return s_lastRequestId;
     }
 
