@@ -4,7 +4,7 @@ import { CharacterType } from "@/lib/definitions";
 const CharacterCard = ({ character }: { character: CharacterType }): React.JSX.Element => {
   return (
     <div className="flex items-center justify-center text-white">
-      <div className="max-w-lg bg-gray-600 shadow-lg rounded-lg overflow-hidden">
+      <div className="max-w-lg bg-gray-600 hover:bg-gray-700 shadow-lg rounded-lg overflow-hidden">
       <Image
         src={`data:image/png;base64,${character.image}`}
         alt="Character Image"
