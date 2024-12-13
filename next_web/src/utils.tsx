@@ -20,3 +20,47 @@ export const getAllCharacters = async (contract: ethers.Contract): Promise<Chara
     return [];
   }
 }
+
+export const createCharacter = async (contract: ethers.Contract, account: string, file: File): Promise<void> => {
+  try {
+    const mimeType = file.type;
+    const processedImage = await processImage(file, mimeType);
+    const tx = await contract.uploadCharacter(account, processedImage.inlineData.data, {
+      value: ethers.parseUnits("0.01", "ether"),
+    });
+    console.log("Transaction sent:", tx.hash);
+    const receipt = await tx.wait();
+    console.log("Transaction confirmed:", receipt);
+  } catch (error) {
+    console.error("Transaction failed:", error);
+  }
+}
+
+async function processImage(file: File, mimeType: string) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 32;
+        canvas.height = 32;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, 32, 32);
+
+        const data = canvas.toDataURL(mimeType).split(",")[1]; // Base64 encoded data
+        resolve({
+          inlineData: {
+            data: data,
+            mimeType: mimeType,
+          },
+        });
+      };
+      img.onerror = reject;
+      img.src = event.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
