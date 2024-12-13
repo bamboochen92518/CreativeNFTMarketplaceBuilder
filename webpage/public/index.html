@@ -45,8 +45,19 @@
             <button id="sendTransaction">Create!</button>
         </div>
         <div id="characterGallery">
-        <h3>Creative NFT Marketplace Builder</h3>
-        <div id="galleryGrid"></div>
+            <div style="margin-bottom: 20px">
+                <h3>Creative NFT Marketplace Builder</h3>
+                <div id="filter", style="display: none">
+                    <label for="sort-options">Sort Characters By:</label>
+                    <select id="sort-options">
+                        <option value="price">Price</option>
+                        <option value="cscore">Score_C</option>
+                        <option value="tscore">Score_T</option>
+                        <option value="ascore">Score_A</option>
+                    </select>
+                </div>
+            </div>
+            <div id="galleryGrid"></div>
             <div id="intro">
                 <section class="section" id="about">
                     <div class="section_left">

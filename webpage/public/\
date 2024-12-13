@@ -206,10 +206,8 @@ function populateCharacterGallery(characters) {
     });
 }
 // loadCharacters();
-let select = document.querySelector("#sort-options");
-select.addEventListener("change", selectFun);
 function selectFun() {
-    const switchValue = select.options[select.selectedIndex];
+    const switchValue = select.options[select.selectedIndex].value;
     switch (switchValue) {
         case "value":
             mode = 0;
@@ -225,6 +223,7 @@ function selectFun() {
             break;
         default:
             return;
-    }
-    loadCharacters();
+  }
 }
+let select = document.querySelector("#filter");
+select.addEventListener("change", selectFun);
