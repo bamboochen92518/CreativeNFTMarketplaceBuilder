@@ -63,7 +63,7 @@ contract CharacterNFT is ERC721Enumerable, FunctionsClient, ConfirmedOwner {
             score_c: 0,
             score_t: 0,
             score_a: 0,
-            price: 0
+            price: 0.01 ether
         });
 
         gradeCharacter(image, newCharacterId);
