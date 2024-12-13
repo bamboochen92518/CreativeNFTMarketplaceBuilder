@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能合約互動</title>
+    <title>CNMB</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
     <script src="src/js/script.js" type="module"></script>
@@ -33,21 +33,53 @@
 </head>
 <body>
     <button id="toggleSidebar">☰</button>
-    <div id="sidebar">
-        <button id="connectWallet">Connect Wallet</button>
-        <button id="uploadCharacter">Upload Character</button>
-    </div>
-
-    <div id="modalOverlay"></div>
-    <div id="uploadModal">
-        <h3>Upload Character</h3>
-        <input type="file" id="uploadImage" accept="image/*">
-        <button id="sendTransaction">Create!</button>
-    </div>
-    <div id="characterGallery">
+    <div class="main-container">
+        <div id="sidebar">
+            <button id="connectWallet">Connect Wallet</button>
+            <button id="uploadCharacter">Upload Character</button>
+        </div>
+        <div id="modalOverlay"></div>
+        <div id="uploadModal">
+            <h3>Upload Character</h3>
+            <input type="file" id="uploadImage" accept="image/*">
+            <button id="sendTransaction">Create!</button>
+        </div>
+        <div id="characterGallery">
         <h3>Creative NFT Marketplace Builder</h3>
         <div id="galleryGrid"></div>
+            <div id="intro">
+                <section class="section" id="about">
+                    <div class="section_left">
+                        <p class="section_title">section title</p>
+                        <p class="section_content">Welcome to the world of BetaShark! It's a cutting-edge Discord bot designed to make your server management easier and more fun. The team of sharks are dedicated to delivering a seamless experience for you and your community.</p>
+                    </div>
+                    <div class="section_right">
+                        <!-- icon image -->
+                        <img src="src/images/icon.svg" alt="Placeholder Image" class="section_image">
+                    </div>
+                </section>
+                <section class="section" id="about">
+                    <div class="section_right">
+                        <!-- icon image -->
+                        <img src="src/images/icon.svg" alt="Placeholder Image" class="section_image">
+                    </div>
+                    <div class="section_left">
+                        <p class="section_title">section title</p>
+                        <p class="section_content">Welcome to the world of BetaShark! It's a cutting-edge Discord bot designed to make your server management easier and more fun. The team of sharks are dedicated to delivering a seamless experience for you and your community.</p>
+                    </div>
+                </section>
+                <section class="section" id="about">
+                    <div class="section_left">
+                        <p class="section_title">section title</p>
+                        <p class="section_content">Welcome to the world of BetaShark! It's a cutting-edge Discord bot designed to make your server management easier and more fun. The team of sharks are dedicated to delivering a seamless experience for you and your community.</p>
+                    </div>
+                    <div class="section_right">
+                        <!-- icon image -->
+                        <img src="src/images/icon.svg" alt="Placeholder Image" class="section_image">
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</body></html>
 

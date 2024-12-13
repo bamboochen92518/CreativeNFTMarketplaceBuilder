@@ -29,6 +29,47 @@ const AVALANCHE_TESTNET_PARAMS = {
     blockExplorerUrls: ['https://testnet.snowtrace.io/']
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const sections = document.querySelectorAll('.section');
+
+    function isElementInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (rect.top >= -rect.height/2 && rect.bottom <= window.innerHeight + rect.height*0.5);
+    }
+
+    function handleScroll() {
+        sections.forEach((section) => {
+            if (isElementInViewport(section)) {
+                section.style.opacity = "1";
+                section.style.transform = "translateY(0)";
+            } else {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+            }
+        });
+    }
+
+    // Initial check when the page loads
+    handleScroll();
+
+    // Add scroll event listener to trigger the appearance of sections
+    window.addEventListener('scroll', handleScroll);
+});
+// document.addEventListener('DOMContentLoaded', function () {
+//     let features = document.getElementsByClassName('feature-item');
+//     let f = document.getElementById('features');
+//     function isElementInViewport(element) {
+//         const rect = element.getBoundingClientRect();
+//         return (rect.top >= -rect.height/2 && rect.bottom <= window.innerHeight + rect.height*0.5);
+//     }
+//     for(let li = 0; li < features.length; li++) {
+//       features[li].addEventListener('click', function () {
+//         if(isElementInViewport(f))
+//           features[li].classList.toggle('active');
+//       });
+//     }
+// });
+
 // Connect to Metamask wallet
 document.getElementById("connectWallet").addEventListener("click", async () => {
     if (typeof window.ethereum !== "undefined") {
@@ -46,16 +87,10 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
             })
 
             const walletAddress = accounts[0];
-            // document.getElementById("walletAddress").innerText = walletAddress;
-
-            // Connect to the contract
             provider = new ethers.BrowserProvider(window.ethereum);
             signer = await provider.getSigner();
             contract = new ethers.Contract(contractAddress, contractABI, signer);
-
             console.log("Successfully Connected", walletAddress);
-
-            // Load characters after connecting
             loadCharacters();
 
         } catch (error) {
@@ -66,8 +101,6 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
     }
 });
 
-
-// Utility function to resize an image to 32x32 and convert to Base64
 async function processImage(file, mimeType) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -97,8 +130,6 @@ async function processImage(file, mimeType) {
     });
 }
 
-
-// Send transaction to the contract
 document.getElementById("sendTransaction").addEventListener("click", async () => {
     const fileInput = document.getElementById("uploadImage");
     if (!fileInput.files.length) {
@@ -115,17 +146,11 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
     }
 
     try {
-        // Process the image
         const processedImage = await processImage(file, mimeType);
-
-        // Call the contract's function with msg.sender and processed image data
         const tx = await contract.uploadCharacter(accounts[0], processedImage.inlineData.data, {
             value: ethers.parseUnits("0.01", "ether"),
         });
-
         console.log("Transaction sent:", tx.hash);
-
-        // Wait for transaction confirmation
         const receipt = await tx.wait();
         console.log("Transaction confirmed:", receipt);
     } catch (error) {
@@ -134,31 +159,31 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
 });
 
 
-// Load characters or display placeholder
 async function loadCharacters() {
+    const intro = document.getElementById("intro");
+    intro.style.display = 'none';
     const galleryGrid = document.getElementById("galleryGrid");
 
-    if (!contract) {
-        galleryGrid.innerHTML = `
-            <div class="placeholder" style="display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%;">
-                <img src="./src/images/placeHolder.png" alt="Placeholder" onerror="this.style.display='none';" style="max-width: 200px; margin-bottom: 20px;">
-                <p style="color: lightgray; opacity: 0.6; font-size: 24px; font-weight: bold; text-align: center;">Wallet not connected</p>
-            </div>
-        `;
-        return;
-    }
+    // if (!contract) {
+    //     galleryGrid.innerHTML = `
+    //         <div class="placeholder">
+    //             <img src="./src/images/placeHolder.png" alt="Placeholder" onerror="this.style.display='none';">
+    //             <p>Wallet not connected</p>
+    //         </div>
+    //     `;
+    //     return;
+    // }
     try {
         const result = await contract.getAllCharacters();
-
         const characters = result.map(character => ({
             image: character.image,
             creator: character.creator,
             owner: character.owner,
             description: character.description,
-            score_c: character.score_c.toNumber(),
-            score_t: character.score_t.toNumber(),
-            score_a: character.score_a.toNumber(),
-            price: character.price.toNumber() / 1e18
+            score_c: character.score_c,
+            score_t: character.score_t,
+            score_a: character.score_a,
+            price: (BigInt(character.price) / BigInt(1e18))
         }));
 
         populateCharacterGallery(characters);
@@ -167,62 +192,35 @@ async function loadCharacters() {
     }
 }
 
-// Populate the character gallery dynamically
 function populateCharacterGallery(characters) {
     const galleryGrid = document.getElementById("galleryGrid");
-    galleryGrid.innerHTML = ""; // Clear previous entries
-
+    galleryGrid.innerHTML = "";
     characters.forEach((character, index) => {
         const characterCard = document.createElement("div");
         characterCard.className = "character-card";
-
         characterCard.innerHTML = `
-            <img src="data:image/png;base64,${character.image}" alt="Character Image">
-            <p><strong>Creator:</strong> ${character.creator}</p>
-            <p><strong>Owner:</strong> ${character.owner}</p>
-            <p><strong>Description:</strong> ${character.description}</p>
-            <p><strong>Scores:</strong> C: ${character.score_c}, T: ${character.score_t}, A: ${character.score_a}</p>
-            <p><strong>Price:</strong> ${character.price} AVAX</p>
+            <div class="card-content">
+                <div class="card-image">
+                    <img src="data:image/png;base64,${character.image}" alt="Character Image">
+                </div>
+                <div class="card-details">
+                    <p><strong>Creator:</strong><br>${character.creator}</p>
+                    <p><strong>Owner:</strong><br>${character.owner}</p>
+                    <p><strong>Description:</strong> ${character.description}</p>
+                    <p><strong>Scores:</strong> C: ${character.score_c}, T: ${character.score_t}, A: ${character.score_a}</p>
+                    <p><strong>Price:</strong> ${character.price} AVAX</p>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="shout-price-btn">Shout Price</button>
+                <button class="report-btn">Report</button>
+            </div>
         `;
+        characterCard.addEventListener("click", function () {
+            characterCard.classList.toggle("expanded");
+        });
 
         galleryGrid.appendChild(characterCard);
-
-        // Add a new row after every 3 cards
-        if ((index + 1) % 3 === 0) {
-            const rowBreak = document.createElement("div");
-            rowBreak.className = "row-break";
-            galleryGrid.appendChild(rowBreak);
-        }
     });
 }
-
-// Utility function to resize an image to 32x32 and convert to Base64
-async function processImage(file, mimeType) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = 32;
-                canvas.height = 32;
-
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, 32, 32);
-
-                const data = canvas.toDataURL(mimeType).split(",")[1]; // Base64 encoded data
-                resolve({
-                    inlineData: {
-                        data: data,
-                        mimeType: mimeType,
-                    },
-                });
-            };
-            img.onerror = reject;
-            img.src = event.target.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-}
-loadCharacters();
+// loadCharacters();
