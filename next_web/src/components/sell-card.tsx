@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useContract } from '@/context/contract-context';
 import { ethers } from 'ethers';
 import { CharacterType } from '@/lib/definitions';
+import { sellCharacter } from '@/utils';
 import Image from 'next/image';
 
 const SellCard = ({ character }: { character: CharacterType }): React.JSX.Element => {

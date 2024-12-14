@@ -61,7 +61,9 @@ const Page = (): React.JSX.Element => {
     return <div>Character is not defined.</div>;
   }
 
-  if (character.owner === accounts[0]) {
+  console.log(character.owner);
+  console.log(accounts[0]);
+  if (character.owner.toLowerCase() === accounts[0].toLowerCase()) {
     return <SellCard character={character} />;
   } else {
     return <BidCard character={character} />;
