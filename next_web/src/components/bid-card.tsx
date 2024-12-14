@@ -22,11 +22,12 @@ const BidCard = ({
   }, [character.price]);
 
   const handleBidSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(bid);
     e.preventDefault();
     if (typeof bid === "number" && bid > currentPriceInEth) {
       try {
         setMessage("Your bid has been successfully placed!");
-        // await placeBidCharacter(contract, character.index, ethers.parseUnits(bid, 'ether');
+        await placeBidCharacter(contract, character.index, bid);
       } catch (err) {
         console.log(err);
       }
