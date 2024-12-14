@@ -5,7 +5,6 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { placeBidCharacter } from '@/utils';
 import { useContract } from '@/context/contract-context';
-import { ethers } from "ethers";
 
 const BidCard = ({
   character
@@ -61,7 +60,7 @@ const BidCard = ({
             <form onSubmit={handleBidSubmit} className="mt-6">
               <div>
                 <label htmlFor="bid" className="block text-gray-300 font-semibold mb-2">
-                  Place Your Bid (ETH):
+                  Place Your Bid (wei):
                 </label>
                 <input
                   type="number"
@@ -69,7 +68,7 @@ const BidCard = ({
                   value={bid}
                   onChange={(e) => setBid(parseFloat(e.target.value))}
                   className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  placeholder={`Enter higher than ${currentPriceInEth} ETH`}
+                  placeholder={`Enter higher than ${currentPriceInEth} AVAX`}
                 />
               </div>
               <button
