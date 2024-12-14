@@ -26,7 +26,7 @@ const BidCard = ({
     if (typeof bid === "number" && bid > currentPriceInEth) {
       try {
         setMessage("Your bid has been successfully placed!");
-        await placeBidCharacter(contract, character.index, ethers.parseUnits(bid, 'ether');
+        // await placeBidCharacter(contract, character.index, ethers.parseUnits(bid, 'ether');
       } catch (err) {
         console.log(err);
       }
