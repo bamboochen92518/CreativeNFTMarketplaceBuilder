@@ -12,6 +12,11 @@
                     "internalType": "string",
                     "name": "image", 
                     "type": "string" 
+                },
+                {   
+                    "internalType": "string",
+                    "name": "name", 
+                    "type": "string" 
                 }
             ],
             "name": "uploadCharacter",
@@ -90,6 +95,11 @@
                         {
                             "internalType": "string",
                             "name": "image",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "name",
                             "type": "string"
                         },
                         {
