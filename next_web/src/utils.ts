@@ -22,6 +22,17 @@ export const getAllCharacters = async (contract: ethers.Contract): Promise<Chara
   }
 }
 
+export const getHighestBids = async (contract: ethers.Contract): Promise<CharacterType[]> => {
+  try {
+    const [bidders, prices] = await contract.getAllBids();
+    let hprice = Math.max(prices);
+    return [bidders[prices.indexOf(hprice)], hprice];
+  } catch (error) {
+    console.error("Failed to fetch characters: ", error);
+    return [null, null];
+  }
+}
+
 export const sellCharacter = async (contract: ethers.Contract, id: number, bidder: string): Promise<CharacterType | null> => {
   try {
     const tx = await contract.sellCharacter(id, bidder);
