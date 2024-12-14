@@ -1,38 +1,49 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useContract } from '@/context/contract-context';
 import { ethers } from 'ethers';
 import { CharacterType } from '@/lib/definitions';
-import { sellCharacter, getHighestBids} from '@/utils';
+import { sellCharacter, getHighestBids } from '@/utils';
 import Image from 'next/image';
 
 const SellCard = ({ character }: { character: CharacterType }): React.JSX.Element => {
-  const { contract, accounts } = useContract();
+  const { contract } = useContract();
   const [isConforming, setIsConforming] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  console.log(getHighestBids(contract));
-  const [hbidder, hprice] = getHighestBids(contract);
+  const [highestBidder, setHighestBidder] = useState<string | null>(null);
+  const [highestPrice, setHighestPrice] = useState<number | null>(null);
 
-  const handleSellNFT = async () => {
-    if (!contract || accounts.length === 0) {
-      setFeedback('No connected wallet or contract found.');
+  useEffect(() => {
+    if (!contract) {
+      setFeedback('No contract found.');
       return;
     }
+    getHighestBids(contract).then((result) => {
+      if (!result) {
+        console.error('Failed to fetch highest bid.');
+      } else {
+        const [highestBidder, highestPrice] = result;
+        setHighestBidder(highestBidder);
+        setHighestPrice(highestPrice);
+      }
+    }).catch((error) => {
+      console.error('Failed to fetch highest bid:', error);
+    });
+  }, [contract]);
 
+  const handleSellNFT = async () => {
+    if (!contract) {
+      setFeedback('No contract found.');
+      return;
+    }
     try {
       setLoading(true);
       setFeedback(null);
-      console.log(`Selling NFT with index: ${character.index}`);
-      // IDK how to get bidder address
-      // I also DK how to get current height bid so I use character.price
-      const tx = await contract.sellCharacter(character.index, hbidder, {
-        from: hbidder,
-      });
-      console.log('Transaction sent:', tx.hash);
-      const receipt = await tx.wait();
-      console.log('Transaction confirmed:', receipt);
+      // console.log(`Selling NFT with index: ${character.index}`);
+
+      await sellCharacter(contract, character.index, highestBidder || '');
       setFeedback('NFT successfully sold!');
     } catch (error) {
       console.error('Error selling NFT:', error);
@@ -55,7 +66,11 @@ const SellCard = ({ character }: { character: CharacterType }): React.JSX.Elemen
           className="w-full h-full object-cover"
         />
         <p className="text-xl font-semibold">Index: {character.index}</p>
-        <p className="text-lg mt-2">Current Bid: <span className="font-bold text-blue-400">{(hprice)? ethers.formatUnits(hprice, 'wei') : "None"} AVAX</span></p>
+        <p className="text-lg mt-2">Current Bid:
+          <span className="font-bold text-blue-400">
+            {(highestPrice) ? ethers.formatUnits(highestPrice, 'wei') : "None"} AVAX
+          </span>
+        </p>
         <button
           onClick={() => setIsConforming(true)}
           className="mt-6 w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
@@ -78,7 +93,10 @@ const SellCard = ({ character }: { character: CharacterType }): React.JSX.Elemen
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-sm">
             <p className="text-lg font-bold mb-4">Confirm Sale</p>
-            <p className="mb-6">Are you sure you want to sell this NFT for the current bid of <strong>{(hprice)? ethers.formatUnits(hprice, 'wei') : "None"} AVAX</strong>?</p>
+            <p className="mb-6">
+              Are you sure you want to sell this NFT for the current bid of
+              <strong>{(highestPrice) ? ethers.formatUnits(highestPrice, 'wei') : "None"} AVAX</strong>?
+            </p>
             <div className="flex justify-between">
               <button
                 onClick={() => setIsConforming(false)}

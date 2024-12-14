@@ -22,23 +22,25 @@ export const getAllCharacters = async (contract: ethers.Contract): Promise<Chara
   }
 }
 
-export const getHighestBids = async (contract: ethers.Contract): Promise<CharacterType[]> => {
+export const getHighestBids = async (contract: ethers.Contract): Promise<[string, number] | null> => {
   try {
     const [bidders, prices] = await contract.getAllBids();
-    let hprice = Math.max(prices);
-    return [bidders[prices.indexOf(hprice)], hprice];
+    const highestPrice = Math.max(prices);
+    return [bidders[prices.indexOf(highestPrice)], highestPrice];
   } catch (error) {
     console.error("Failed to fetch characters: ", error);
-    return [null, null];
+    return null;
   }
 }
 
-export const sellCharacter = async (contract: ethers.Contract, id: number, bidder: string): Promise<CharacterType | null> => {
+export const sellCharacter = async (contract: ethers.Contract, id: number, bidder: string): Promise<void> => {
   try {
     const tx = await contract.sellCharacter(id, bidder);
+    console.log('Transaction sent:', tx.hash);
+    const receipt = await tx.wait();
+    console.log('Transaction confirmed:', receipt);
   } catch (error) {
     console.error("Failed to place bid to id: ", error);
-    return null;
   }
 }
 
