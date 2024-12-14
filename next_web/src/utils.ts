@@ -45,45 +45,64 @@ export const getCharacterByIndex = async (contract: ethers.Contract, id: number)
   }
 }
 
+// Define the type for processed image
+type ProcessedImageType = {
+  inlineData: {
+    data: string;
+    mimeType: string;
+  };
+};
+
+/**
+ * Upload a character using the contract and selected file.
+ * @param contract - ethers.js contract instance.
+ * @param account - Wallet address of the user.
+ * @param file - The image file selected by the user.
+ */
 export const createCharacter = async (
   contract: ethers.Contract,
   account: string,
   file: File
 ): Promise<void> => {
   try {
-    // Process the image
-    const mimeType = file.type;
-    const processedImage = await processImage(file, mimeType);
+    // console.log("Processing image file:", file.name);
 
-    // Send the transaction to the blockchain
+    // Process the image file
+    const mimeType = file.type;
+    const processedImage: ProcessedImageType = await processImage(file, mimeType);
+
+    console.log("Processed image: ", processedImage);
+    console.log("account: ", account);
+
+    // Send the transaction to the smart contract
     const tx = await contract.uploadCharacter(account, processedImage.inlineData.data, {
-      value: ethers.parseUnits("0.01", "ether"), // Payment for the transaction
+      value: ethers.parseUnits("0.01", "ether"),
     });
     console.log("Transaction sent:", tx.hash);
 
-    // Wait for the transaction to be mined
+    // Wait for transaction confirmation
     const receipt = await tx.wait();
     console.log("Transaction confirmed:", receipt);
   } catch (error) {
-    console.error("Character creation failed:", error);
-    throw error; // Pass the error up the chain for display
+    console.error("Error uploading character:", error);
+    throw error; // Re-throw error for the caller
   }
 };
 
 /**
- * Processes the image to create a base64 representation.
- * @param file - The uploaded image file.
- * @param mimeType - The MIME type of the file.
- * @returns Base64-encoded image data.
+ * Process the uploaded file into Base64-encoded image data.
+ * @param file - The image file selected by the user.
+ * @param mimeType - The MIME type of the file (e.g., "image/png").
+ * @returns ProcessedImage containing Base64 data and MIME type.
  */
-async function processImage(file: File, mimeType: string) {
+async function processImage(file: File, mimeType: string): Promise<ProcessedImageType> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        canvas.width = 32; // Resize image to 32x32
+        canvas.width = 32;
         canvas.height = 32;
 
         const ctx = canvas.getContext("2d");
@@ -94,7 +113,7 @@ async function processImage(file: File, mimeType: string) {
 
         ctx.drawImage(img, 0, 0, 32, 32);
 
-        // Convert canvas to Base64 data
+        // Convert canvas content to Base64
         const data = canvas.toDataURL(mimeType).split(",")[1];
         resolve({
           inlineData: {
@@ -103,10 +122,10 @@ async function processImage(file: File, mimeType: string) {
           },
         });
       };
-      img.onerror = reject;
+      img.onerror = reject; // Handle image load errors
       img.src = event.target?.result as string;
     };
-    reader.onerror = reject;
-    reader.readAsDataURL(file); // Read the file as Base64
+    reader.onerror = reject; // Handle file read errors
+    reader.readAsDataURL(file); // Read file as Base64
   });
 }
