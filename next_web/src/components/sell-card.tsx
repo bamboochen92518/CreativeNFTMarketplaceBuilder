@@ -73,7 +73,11 @@ const SellCard = ({ character }: { character: CharacterType }): React.JSX.Elemen
         </p>
         <button
           onClick={() => setIsConforming(true)}
-          className="mt-6 w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+          className={`
+            mt-6 w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all
+            ${(loading || highestBidder === null) ? 'opacity-50 cursor-not-allowed' : ''}
+          `}
+          disabled={loading || highestPrice === null}
         >
           Sell NFT
         </button>

@@ -11,8 +11,6 @@ const Page = (): React.JSX.Element => {
   const { accounts, contract } = useContract();
   const { index } = useParams();
 
-  console.log("index:", index);
-
   const [character, setCharacter] = useState<CharacterType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,12 +59,11 @@ const Page = (): React.JSX.Element => {
     return <div>Character is not defined.</div>;
   }
 
-  console.log(character.owner);
-  console.log(accounts[0]);
   if (character.owner.toLowerCase() === accounts[0].toLowerCase()) {
     return <SellCard character={character} />;
   } else {
-    return <BidCard character={character} />;
+    // return <BidCard character={character} />;
+    return <SellCard character={character} />;
   }
 };
 
