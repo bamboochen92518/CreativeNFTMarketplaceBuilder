@@ -17,11 +17,12 @@ const BidCard = ({
   const { contract, accounts } = useContract(); // Access contract and accounts
 
   const handleBidSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(bid);
     e.preventDefault();
     if (typeof bid === "number" && bid > character.price) {
       try {
         setMessage("Your bid has been successfully placed!");
-        await placeBidCharacter(contract, character.index, bid.toString);
+        await placeBidCharacter(contract, character.index, bid);
       } catch (err) {
         console.log(err);
       }
