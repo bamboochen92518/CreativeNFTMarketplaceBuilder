@@ -7,6 +7,7 @@ export const getAllCharacters = async (contract: ethers.Contract): Promise<Chara
     const characters: CharacterType[] = result.map((character: CharacterType, index: number) => ({
       index: index,
       image: character.image,
+      name: character.name,
       creator: character.creator,
       owner: character.owner,
       description: character.description,
