@@ -20,7 +20,7 @@ const Page = (): React.JSX.Element => {
   useEffect(() => {
     const fetchCharacter = async () => {
       if (!contract) {
-        setError("Contract is not defined. Please check if you are connected to the wallet.");
+        setError("please connect to the wallet first  Please check if you are connected to the wallet.");
         setLoading(false);
         return;
       }

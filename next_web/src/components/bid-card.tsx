@@ -1,5 +1,6 @@
 // pages/nft-bid.tsx
 import { CharacterType } from "@/lib/definitions";
+import { ethers } from "ethers";
 import Image from "next/image";
 import React, { useState } from "react";
 import { placeBidCharacter } from '@/utils';
@@ -44,7 +45,7 @@ const BidCard = ({
               className="w-full h-full object-cover"
             />
             <p className="absolute bottom-2 left-2 bg-gray-800 bg-opacity-70 px-4 py-2 rounded-lg text-sm font-bold text-green-400">
-              Current price: {character.price} {"ETH"}
+              Current price: {ethers.formatUnits(character.price, 18)} {"AVAX"}
             </p>
           </div>
           <div className="p-6 flex flex-col justify-between">

@@ -12,7 +12,7 @@ const Page = (): React.JSX.Element => {
 
   useEffect(() => {
     if (!contract) {
-      setError("Contract is not defined.");
+      setError("please connect to the wallet first ");
       return;
     }
 
