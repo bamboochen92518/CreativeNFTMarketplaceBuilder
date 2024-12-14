@@ -8,6 +8,7 @@ const CreateCharacterBox = ({ display }: { display: boolean }): React.JSX.Elemen
   const [file, setFile] = useState<File | null>(null); // State to store selected file
   const [loading, setLoading] = useState(false); // Loading state for form submission
   const [error, setError] = useState<string | null>(null); // Error message state
+  const [success, setSuccess] = useState<string | null>(null); // Success message state
   const { contract, accounts } = useContract(); // Access contract and accounts
 
   if (!display) return <></>;
@@ -15,6 +16,7 @@ const CreateCharacterBox = ({ display }: { display: boolean }): React.JSX.Elemen
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
+    setSuccess(null);
 
     if (!file) {
       setError("Please select a file to upload.");
@@ -27,9 +29,11 @@ const CreateCharacterBox = ({ display }: { display: boolean }): React.JSX.Elemen
 
     try {
       setLoading(true);
-      console.log("Uploading character with file:", file.name);
+      // console.log("Uploading character with file:", file.name);
       await createCharacter(contract, accounts[0], file);
-      console.log("Character creation successful!");
+      // console.log("Character creation successful!");
+      setSuccess("Character created successfully!");
+      setFile(null); // Clear the selected file
       setError(null);
     } catch (err) {
       console.error("Error creating character:", err);
@@ -49,14 +53,15 @@ const CreateCharacterBox = ({ display }: { display: boolean }): React.JSX.Elemen
       '
     >
       <p className='text-lg font-bold'>Upload Character</p>
-      {error && <p className='text-red-500'>{error}</p>} {/* Display errors */}
+      {error && <p className='text-red-500'>{error}</p>}
+      {success && <p className='text-green-500'>{success}</p>}
       <input
         type="file"
         accept="image/*"
         onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
         className='block w-full border border-gray-300 p-2 rounded-lg'
       />
-      {file && <p className='text-sm text-gray-700'>Selected: {file.name}</p>} {/* Show file name */}
+      {file && <p className='text-sm text-gray-700'>Selected: {file.name}</p>}
       <button
         type='submit'
         disabled={loading}
