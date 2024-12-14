@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { getCharacterByIndex } from "@/utils";
-import CharacterCard from "@/components/character-card";
 import { useContract } from "@/context/contract-context";
 import { CharacterType } from "@/lib/definitions";
 import BidCard from "@/components/bid-card";

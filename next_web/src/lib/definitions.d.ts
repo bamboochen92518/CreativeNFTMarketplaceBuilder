@@ -1,4 +1,5 @@
 export type CharacterType = {
+  index: number,
   image: string,
   creator: string,
   owner: string,

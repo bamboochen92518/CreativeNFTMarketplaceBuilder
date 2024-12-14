@@ -4,7 +4,8 @@ import { CharacterType } from "@/lib/definitions";
 export const getAllCharacters = async (contract: ethers.Contract): Promise<CharacterType[]> => {
   try {
     const result = await contract.getAllCharacters();
-    const characters: CharacterType[] = result.map((character: CharacterType) => ({
+    const characters: CharacterType[] = result.map((character: CharacterType, index: number) => ({
+      index: index,
       image: character.image,
       creator: character.creator,
       owner: character.owner,
