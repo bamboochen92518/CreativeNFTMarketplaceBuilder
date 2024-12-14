@@ -62,8 +62,8 @@ const Page = (): React.JSX.Element => {
   if (character.owner.toLowerCase() === accounts[0].toLowerCase()) {
     return <SellCard character={character} />;
   } else {
-    // return <BidCard character={character} />;
-    return <SellCard character={character} />;
+    return <BidCard character={character} />;
+    //return <SellCard character={character} />;
   }
 };
 
