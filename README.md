@@ -27,9 +27,12 @@ You should first export `FUJI_RPC_URL` and `PRIVATE_KEY`.
 After deploying the contract, you need to add your contract address to `webpage/public/src/js/contract.json`.
 
 ### Structure
-nft related functions: `src/context/contract-context.tsx` & `src/utils.tsx`
+nft related functions: `src/context/contract-context.tsx` & `src/utils.ts`
 
 ### Run webpage
+
+> node version: v22.8.0
+> npm version: 10.8.3
 
 - first time
 ```shell
