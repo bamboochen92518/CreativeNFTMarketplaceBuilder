@@ -64,8 +64,7 @@ const Page = (): React.JSX.Element => {
   if (character.owner === accounts[0]) {
     return <SellCard character={character} />;
   } else {
-    return <SellCard character={character} />;
-    // return <BidCard character={character} />;
+    return <BidCard character={character} />;
   }
 };
 
