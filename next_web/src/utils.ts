@@ -116,7 +116,7 @@ export const createCharacter = async (
 
     // Send the transaction to the smart contract
     const tx = await contract.uploadCharacter(account, processedImage.inlineData.data, {
-      value: BigInt(ethers.parseUnits("0.01", "ether")),
+      value: BigInt(ethers.parseUnits("0.1", "ether")),
     });
     console.log("Transaction sent:", tx.hash);
 
