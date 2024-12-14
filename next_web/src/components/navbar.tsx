@@ -46,9 +46,6 @@ const Navbar = (): React.JSX.Element => {
               </button>
               <CreateChracaterBox
                 display={creatingCharacter}
-                callback={() => {
-                  setCreatingCharacter(false);
-                }}
               />
               <p className="text-sm">{accounts[0]}</p>
             </div>
