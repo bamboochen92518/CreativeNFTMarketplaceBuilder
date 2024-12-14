@@ -73,6 +73,7 @@ export const createCharacter = async (
 
     console.log("Processed image: ", processedImage);
     console.log("account: ", account);
+    console.log("contract: ", contract);
 
     // Send the transaction to the smart contract
     const tx = await contract.uploadCharacter(account, processedImage.inlineData.data, {

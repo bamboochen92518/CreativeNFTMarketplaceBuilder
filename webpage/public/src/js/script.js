@@ -122,6 +122,9 @@ document.getElementById("sendTransaction").addEventListener("click", async () =>
 
     try {
         const processedImage = await processImage(file, mimeType);
+    console.log("Processed image: ", processedImage);
+    console.log("account: ", accounts[0]);
+    console.log("contract: ", contract);
         const tx = await contract.uploadCharacter(accounts[0], processedImage.inlineData.data, {
             value: ethers.parseUnits("0.01", "ether"),
         });
