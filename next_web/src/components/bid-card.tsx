@@ -2,6 +2,9 @@
 import { CharacterType } from "@/lib/definitions";
 import Image from "next/image";
 import React, { useState } from "react";
+import { placeBidCharacter } from '@/utils';
+import { useContract } from '@/context/contract-context';
+import { Contract } from "ethers";
 
 const BidCard = ({
   character
@@ -11,11 +14,17 @@ const BidCard = ({
 
   const [bid, setBid] = useState<number | string>("");
   const [message, setMessage] = useState<string>("");
+  const { contract, accounts } = useContract(); // Access contract and accounts
 
-  const handleBidSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleBidSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (typeof bid === "number" && bid > character.price) {
-      setMessage("Your bid has been successfully placed!");
+      try {
+        setMessage("Your bid has been successfully placed!");
+        await placeBidCharacter(contract, character.index, bid.toString);
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       setMessage("Bid must be higher than the current bid.");
     }

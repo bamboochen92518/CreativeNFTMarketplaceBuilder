@@ -22,6 +22,22 @@ export const getAllCharacters = async (contract: ethers.Contract): Promise<Chara
   }
 }
 
+export const placeBidCharacter = async (contract: ethers.Contract, id: number, price: string): Promise<CharacterType | null> => {
+  try {
+    const tx = await contract.bidCharacter(id, {
+      value: ethers.parseUnits(price, "ether"),
+    });
+    const characters: CharacterType[] = await contract.getAllCharacters(contract);
+    if (id < 0 || id >= characters.length) {
+      return null;
+    }
+    characters[id].price = price;
+  } catch (error) {
+    console.error("Failed to place bid to id: ", error);
+    return null;
+  }
+}
+
 export const getCharactersByAccount = async (contract: ethers.Contract, account: string): Promise<CharacterType[]> => {
   try {
     const characters: CharacterType[] = await contract.getAllCharacters(contract);
