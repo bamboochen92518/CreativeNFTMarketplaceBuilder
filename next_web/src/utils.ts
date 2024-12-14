@@ -23,9 +23,9 @@ export const getAllCharacters = async (contract: ethers.Contract): Promise<Chara
   }
 }
 
-export const getHighestBids = async (contract: ethers.Contract): Promise<[string, number] | null> => {
+export const getHighestBids = async (contract: ethers.Contract, id: number): Promise<[string, number] | null> => {
   try {
-    const [bidders, prices] = await contract.getAllBids();
+    const [bidders, prices] = await contract.getAllBids(id);
     const highestPrice = Math.max(prices);
     return [bidders[prices.indexOf(highestPrice)], highestPrice];
   } catch (error) {
@@ -116,7 +116,7 @@ export const createCharacter = async (
 
     // Send the transaction to the smart contract
     const tx = await contract.uploadCharacter(account, processedImage.inlineData.data, {
-      value: ethers.parseUnits("0.01", "ether"),
+      value: BigInt(ethers.parseUnits("0.01", "ether")),
     });
     console.log("Transaction sent:", tx.hash);
 

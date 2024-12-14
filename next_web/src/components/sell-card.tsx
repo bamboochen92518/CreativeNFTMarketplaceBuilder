@@ -20,7 +20,7 @@ const SellCard = ({ character }: { character: CharacterType }): React.JSX.Elemen
       setFeedback('No contract found.');
       return;
     }
-    getHighestBids(contract).then((result) => {
+    getHighestBids(contract, character.index).then((result) => {
       if (!result) {
         console.error('Failed to fetch highest bid.');
       } else {
