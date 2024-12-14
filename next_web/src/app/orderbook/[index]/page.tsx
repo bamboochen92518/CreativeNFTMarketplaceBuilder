@@ -5,11 +5,12 @@ import { getCharacterByIndex } from "@/utils";
 import { useContract } from "@/context/contract-context";
 import { CharacterType } from "@/lib/definitions";
 import BidCard from "@/components/bid-card";
+import SellCard from "@/components/sell-card";
 
 const Page = (): React.JSX.Element => {
-  const { contract } = useContract();
+  const { accounts, contract } = useContract();
   const { index } = useParams();
-  
+
   console.log("index:", index);
 
   const [character, setCharacter] = useState<CharacterType | null>(null);
@@ -60,7 +61,12 @@ const Page = (): React.JSX.Element => {
     return <div>Character is not defined.</div>;
   }
 
-  return <BidCard character={character} />;
+  if (character.owner === accounts[0]) {
+    return <SellCard character={character} />;
+  } else {
+    return <SellCard character={character} />;
+    // return <BidCard character={character} />;
+  }
 };
 
 export default Page;
