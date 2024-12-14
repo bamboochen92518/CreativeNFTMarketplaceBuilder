@@ -40,7 +40,7 @@ export const placeBidCharacter = async (contract: ethers.Contract, id: number, p
 
 export const getCharactersByAccount = async (contract: ethers.Contract, account: string): Promise<CharacterType[]> => {
   try {
-    const characters: CharacterType[] = await contract.getAllCharacters(contract);
+    const characters: CharacterType[] = await getAllCharacters(contract);
     return characters.filter(character => character.owner.toLowerCase() === account.toLowerCase());
   } catch (error) {
     console.error("Failed to fetch the account's characters: ", error);
@@ -50,7 +50,7 @@ export const getCharactersByAccount = async (contract: ethers.Contract, account:
 
 export const getCharacterByIndex = async (contract: ethers.Contract, id: number): Promise<CharacterType | null> => {
   try {
-    const characters: CharacterType[] = await contract.getAllCharacters(contract);
+    const characters: CharacterType[] = await getAllCharacters(contract);
     if (id < 0 || id >= characters.length) {
       return null;
     }

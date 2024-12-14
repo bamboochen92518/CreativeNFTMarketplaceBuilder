@@ -2,10 +2,10 @@
 import { CharacterType } from "@/lib/definitions";
 import { ethers } from "ethers";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { placeBidCharacter } from '@/utils';
 import { useContract } from '@/context/contract-context';
-import { Contract } from "ethers";
+import { ethers } from "ethers";
 
 const BidCard = ({
   character
@@ -15,12 +15,17 @@ const BidCard = ({
 
   const [bid, setBid] = useState<number | string>("");
   const [message, setMessage] = useState<string>("");
+  const [ currentPriceInEth, setCurrentPriceInEth ] = useState<number>(0);
   const { contract, accounts } = useContract(); // Access contract and accounts
+
+  useEffect(() => {
+    setCurrentPriceInEth(parseFloat(ethers.formatUnits(character.price, "ether")));
+  }, [character.price]);
 
   const handleBidSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log(bid);
     e.preventDefault();
-    if (typeof bid === "number" && bid > character.price) {
+    if (typeof bid === "number" && bid > currentPriceInEth) {
       try {
         setMessage("Your bid has been successfully placed!");
         await placeBidCharacter(contract, character.index, bid);
@@ -64,7 +69,7 @@ const BidCard = ({
                   value={bid}
                   onChange={(e) => setBid(parseFloat(e.target.value))}
                   className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  placeholder={`Enter higher than ${character.price} ETH`}
+                  placeholder={`Enter higher than ${currentPriceInEth} ETH`}
                 />
               </div>
               <button
